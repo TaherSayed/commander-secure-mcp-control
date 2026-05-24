@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Commander — Secure MCP Control
- * Plugin URI:        https://hbs-it-gmbh.de/wp-commander
+ * Plugin URI:        https://github.com/TaherSayed/commander-secure-mcp-control
  * Description:       Give Claude and other MCP-compatible AI clients full, secure, audited control of your WordPress site. JSON-RPC 2.0 / Streamable HTTP, OAuth 2.1, brute-force protection, activation wizard, stats dashboard, audit log. Powered by Taher Sayed · HBS IT GmbH.
  * Version:           1.4.0
  * Requires at least: 6.2
