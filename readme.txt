@@ -4,7 +4,7 @@ Tags: mcp, claude, ai, oauth, rest-api
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 
 == Changelog ==
 
+= 1.6.3 =
+* **Fix:** OAuth consent screen and HTML error pages were being JSON-encoded by WordPress's REST API serializer (which always `wp_json_encode`s the response body even when `Content-Type: text/html` is set). Browsers received a quoted JSON string instead of HTML and rendered an empty page. `html_response()` and `raw_redirect()` now `echo`+`exit` to bypass the REST serializer entirely.
+
 = 1.6.2 =
 * **Fix:** Self-healing upgrade routine. `Plugin::maybe_upgrade()` now runs on every load and compares the stored `cmcp_version` option against `CMCP_VERSION`; if the version differs (or our primary `cmcp_tokens` table is missing for any reason), it re-runs the activation routine (idempotent `dbDelta`). Fixes the silent "token was created but doesn't appear in the list" bug seen when WordPress's "Replace current with uploaded" upgrade path doesn't trigger `register_activation_hook`.
 
@@ -184,6 +187,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 * Initial release. Personal access tokens, scope + capability gating, audit log, rate limiting, SSRF guard on media.upload, 25 built-in tools, WP-CLI command, custom-tool filter.
 
 == Upgrade Notice ==
+
+= 1.6.3 =
+Fixes OAuth consent screen rendering as blank/garbled. Required for any client (Claude Desktop, Claude Code) connecting via OAuth.
 
 = 1.6.2 =
 Self-heals missing DB tables on load. Recommended for anyone who upgraded via WP's "Replace current with uploaded" flow and saw silent token-creation failures.

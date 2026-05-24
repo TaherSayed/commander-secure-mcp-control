@@ -851,19 +851,40 @@ final class OAuth {
 
     /* ----------------------- Response helpers ----------------------- */
 
+    /**
+     * Emit a raw HTML response and exit. We bypass WP's REST serializer
+     * because it always wp_json_encode()s the response body — even with
+     * Content-Type set to text/html — turning our consent / error pages
+     * into a quoted, escaped JSON string that browsers can't render.
+     */
     private static function html_response( string $html, int $status ): \WP_REST_Response {
-        $r = new \WP_REST_Response( $html, $status );
-        $r->header( 'Content-Type', 'text/html; charset=utf-8' );
-        $r->header( 'Cache-Control', 'no-store' );
-        $r->header( 'X-Content-Type-Options', 'nosniff' );
-        return $r;
+        if ( ! headers_sent() ) {
+            status_header( $status );
+            header( 'Content-Type: text/html; charset=utf-8' );
+            header( 'Cache-Control: no-store' );
+            header( 'X-Content-Type-Options: nosniff' );
+        }
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML built from esc_*'d parts in render_*_page().
+        echo $html;
+        exit;
+        // @phpstan-ignore-next-line return.unreachable -- Keeps return type compatible for callers.
+        return new \WP_REST_Response( null, $status );
     }
 
+    /**
+     * Emit a 302 redirect and exit. Same reasoning as html_response —
+     * REST's serializer would otherwise emit a quoted JSON body alongside
+     * the Location header.
+     */
     private static function raw_redirect( string $url ): \WP_REST_Response {
-        $r = new \WP_REST_Response( null, 302 );
-        $r->header( 'Location', $url );
-        $r->header( 'Cache-Control', 'no-store' );
-        return $r;
+        if ( ! headers_sent() ) {
+            status_header( 302 );
+            header( 'Location: ' . $url );
+            header( 'Cache-Control: no-store' );
+        }
+        exit;
+        // @phpstan-ignore-next-line return.unreachable -- Keeps return type compatible for callers.
+        return new \WP_REST_Response( null, 302 );
     }
 
     private static function redirect_with_error( string $redirect_uri, string $code, string $desc, string $state ): \WP_REST_Response {
