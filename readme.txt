@@ -4,7 +4,7 @@ Tags: mcp, claude, ai, oauth, rest-api
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 
 == Changelog ==
 
+= 1.6.2 =
+* **Fix:** Self-healing upgrade routine. `Plugin::maybe_upgrade()` now runs on every load and compares the stored `cmcp_version` option against `CMCP_VERSION`; if the version differs (or our primary `cmcp_tokens` table is missing for any reason), it re-runs the activation routine (idempotent `dbDelta`). Fixes the silent "token was created but doesn't appear in the list" bug seen when WordPress's "Replace current with uploaded" upgrade path doesn't trigger `register_activation_hook`.
+
 = 1.6.1 =
 * **WordPress.org compliance.** Removed the GitHub auto-updater (the `Update URI:` header, `includes/class-github-updater.php`, and the `GithubUpdater::init()` call). WordPress.org plugins must not ship their own update mechanism — updates come from the .org directory.
 * **Fix:** Converted the Python and Node snippets in `includes/admin/views/partials/token-snippets.php` from heredoc syntax (`<<<PY`, `<<<JS`) to plain string concatenation. The Plugin Check rule `PluginCheck.CodeAnalysis.Heredoc.NotAllowed` flags heredoc as a guideline violation.
@@ -181,6 +184,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 * Initial release. Personal access tokens, scope + capability gating, audit log, rate limiting, SSRF guard on media.upload, 25 built-in tools, WP-CLI command, custom-tool filter.
 
 == Upgrade Notice ==
+
+= 1.6.2 =
+Self-heals missing DB tables on load. Recommended for anyone who upgraded via WP's "Replace current with uploaded" flow and saw silent token-creation failures.
 
 = 1.6.1 =
 Drops the GitHub auto-updater (required for WordPress.org listing) and a heredoc syntax issue flagged by Plugin Check. No functional changes.

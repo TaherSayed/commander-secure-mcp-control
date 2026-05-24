@@ -39,6 +39,13 @@ final class Plugin {
 
     public function init(): void {
 
+        // Self-heal: if our tables/options are missing or the stored version
+        // is older than CMCP_VERSION, re-run dbDelta. Fixes installs where
+        // register_activation_hook didn't fire — e.g. the "Replace current
+        // with uploaded" upgrade path, manual SVN updates, or a site that
+        // accidentally ran uninstall.php and then reinstalled.
+        self::maybe_upgrade();
+
         // Register REST routes (the MCP endpoint).
         add_action( 'rest_api_init', [ Server::class, 'register_routes' ] );
 
@@ -234,6 +241,34 @@ final class Plugin {
 
     public static function deactivate(): void {
         wp_clear_scheduled_hook( 'cmcp_daily_cleanup' );
+    }
+
+    /** Option key storing the last version that ran the activation routine. */
+    public const OPT_VERSION = 'cmcp_version';
+
+    /**
+     * Run activation routine (dbDelta etc.) if the installed code version
+     * is newer than the last one that successfully activated, OR if our
+     * primary token table is missing for any reason.
+     */
+    public static function maybe_upgrade(): void {
+        $stored = (string) get_option( self::OPT_VERSION, '0.0.0' );
+        $needs  = version_compare( $stored, CMCP_VERSION, '<' );
+
+        if ( ! $needs ) {
+            // Even with matching version, double-check the primary table exists.
+            global $wpdb;
+            $table = $wpdb->prefix . self::TABLE_TOKENS;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- One-shot self-heal check.
+            $exists = (string) $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
+            if ( $exists === $table ) {
+                return;
+            }
+        }
+
+        // Run activation routine. dbDelta is idempotent for matching schemas.
+        self::activate();
+        update_option( self::OPT_VERSION, CMCP_VERSION, true );
     }
 }
 
