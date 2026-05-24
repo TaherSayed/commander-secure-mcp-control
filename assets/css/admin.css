@@ -1,0 +1,265 @@
+/* Commander · Secure MCP Control · HBS IT GmbH */
+
+:root {
+    --cmcp-brand:        #0a3d62;
+    --cmcp-brand-2:      #1976d2;
+    --cmcp-accent:       #00b894;
+    --cmcp-danger:       #d63031;
+    --cmcp-warning:      #fdcb6e;
+    --cmcp-bg:           #f7f9fc;
+    --cmcp-card-bg:      #fff;
+    --cmcp-border:       #e1e5eb;
+    --cmcp-text:         #1d2327;
+    --cmcp-muted:        #646970;
+}
+
+.cmcp-wrap {
+    max-width: 1100px;
+}
+
+.cmcp-hero {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background: linear-gradient(135deg, var(--cmcp-brand) 0%, var(--cmcp-brand-2) 100%);
+    color: #fff;
+    padding: 22px 28px;
+    border-radius: 10px;
+    margin: 12px 0 20px;
+    box-shadow: 0 4px 18px rgba(10, 61, 98, 0.15);
+}
+.cmcp-hero h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #fff;
+    font-weight: 600;
+}
+.cmcp-hero .cmcp-version {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-left: 6px;
+    font-weight: 400;
+}
+.cmcp-subtitle {
+    margin: 2px 0 0;
+    opacity: 0.9;
+    font-size: 13px;
+}
+.cmcp-logo svg {
+    display: block;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+}
+
+.cmcp-card {
+    background: var(--cmcp-card-bg);
+    border: 1px solid var(--cmcp-border);
+    border-radius: 10px;
+    padding: 28px 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.cmcp-card h2 {
+    margin-top: 0;
+    font-size: 20px;
+    color: var(--cmcp-brand);
+}
+.cmcp-card.cmcp-success {
+    border-left: 4px solid var(--cmcp-accent);
+}
+.cmcp-card.cmcp-info {
+    background: #f0f6fc;
+    border-color: #c8d6e5;
+}
+.cmcp-card .lead {
+    color: var(--cmcp-muted);
+    font-size: 14px;
+    margin-top: -6px;
+}
+
+.cmcp-step {
+    border-top: 1px solid #f0f0f1;
+    padding-top: 18px;
+    margin-top: 18px;
+}
+.cmcp-step:first-of-type {
+    border-top: 0;
+    margin-top: 8px;
+    padding-top: 8px;
+}
+.cmcp-step h3 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    color: var(--cmcp-brand);
+}
+.cmcp-check {
+    display: block;
+    padding: 6px 0;
+    cursor: pointer;
+}
+.cmcp-check input {
+    margin-right: 8px;
+}
+
+.cmcp-actions {
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid #f0f0f1;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.cmcp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+}
+.cmcp-mini-card {
+    background: #f7f9fc;
+    border: 1px solid var(--cmcp-border);
+    border-radius: 8px;
+    padding: 18px;
+}
+.cmcp-mini-card h4 {
+    margin: 0 0 10px;
+    color: var(--cmcp-brand);
+    font-size: 14px;
+}
+.cmcp-inline-code {
+    display: block;
+    background: #fff;
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--cmcp-border);
+    font-size: 11px;
+    word-break: break-all;
+    margin: 6px 0;
+}
+
+.cmcp-pre {
+    background: #1d2327;
+    color: #d4edff;
+    padding: 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 8px 0 0;
+}
+
+.cmcp-token-box {
+    background: #1d2327;
+    color: #50e3c2;
+    padding: 14px 16px;
+    border-radius: 6px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 10px 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    word-break: break-all;
+}
+.cmcp-token-box code {
+    flex: 1;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+.cmcp-features {
+    list-style: none;
+    margin: 8px 0;
+    padding: 0;
+    columns: 2;
+    column-gap: 28px;
+}
+.cmcp-features li {
+    padding: 4px 0;
+    font-size: 13px;
+    break-inside: avoid;
+}
+
+.cmcp-credit {
+    text-align: center;
+    color: var(--cmcp-muted);
+    font-size: 11px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid #f0f0f1;
+}
+.cmcp-credit a {
+    color: var(--cmcp-brand);
+    text-decoration: none;
+}
+
+/* Stats / Dashboard */
+.cmcp-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin: 16px 0 24px;
+}
+.cmcp-stat {
+    background: var(--cmcp-card-bg);
+    border: 1px solid var(--cmcp-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    border-left: 4px solid var(--cmcp-brand-2);
+}
+.cmcp-stat .num {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cmcp-brand);
+    line-height: 1;
+    display: block;
+    margin-bottom: 4px;
+}
+.cmcp-stat .lbl {
+    color: var(--cmcp-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.cmcp-stat.success { border-left-color: var(--cmcp-accent); }
+.cmcp-stat.warning { border-left-color: var(--cmcp-warning); }
+.cmcp-stat.danger  { border-left-color: var(--cmcp-danger);  }
+
+.cmcp-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 80px;
+    background: #fafbfc;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--cmcp-border);
+}
+.cmcp-bars .bar {
+    flex: 1;
+    background: linear-gradient(180deg, var(--cmcp-brand-2) 0%, var(--cmcp-brand) 100%);
+    border-radius: 2px 2px 0 0;
+    min-height: 2px;
+    position: relative;
+}
+.cmcp-bars .bar.fail {
+    background: linear-gradient(180deg, var(--cmcp-danger) 0%, #a71d1f 100%);
+}
+
+.cmcp-table-tools td:first-child { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+
+.cmcp-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.cmcp-badge.read  { background: #e8f4fd; color: #0a4b78; }
+.cmcp-badge.write { background: #fff4e6; color: #b26a00; }
+.cmcp-badge.admin { background: #ffe8e8; color: #9b1c1c; }
+.cmcp-badge.ok    { background: #d4f4e8; color: #0a6041; }
+.cmcp-badge.fail  { background: #fde8e8; color: #9b1c1c; }
