@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Commander — Secure MCP Control 1.3.0\n"
 "Report-Msgid-Bugs-To: https://hbs-it-gmbh.de/wp-commander\n"
-"POT-Creation-Date: 2026-05-24 13:58+0000\n"
+"POT-Creation-Date: 2026-05-24 14:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,7 +104,7 @@ msgid "Tool"
 msgstr ""
 
 #: includes/admin/views/log-page.php:24
-#: includes/admin/views/tokens-page.php:107
+#: includes/admin/views/tokens-page.php:131
 msgid "Status"
 msgstr ""
 
@@ -390,111 +390,147 @@ msgid "bytes (raise this if uploading large media)"
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:102
-msgid "Existing tokens"
+msgid "Other — enter ID manually…"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:103
+msgid "0 — anonymous (only public/read tools)"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:106
+msgid "Token executes with this user's WordPress capabilities. Admin-scope tools (plugins / users / settings) ALL require the bound user to actually have those WP capabilities — so pick an Administrator unless you specifically want a limited token."
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:108
-msgid "Prefix"
+msgid "This token will have no WordPress user."
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:110
-msgid "User"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:111
-msgid "Last used"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:112
-msgid "Last IP"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:113
-msgid "7-day calls"
+#: includes/admin/views/tokens-page.php:109
+msgid "Every capability-gated tool will fail. Only use this for testing the auth handshake itself."
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:114
-msgid "Expires"
+msgid "Expires in (days)"
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:115
-msgid "Actions"
+msgid "0 = never"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:118
+msgid "IP allowlist"
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:120
+msgid "One per line. Leave empty to allow any source IP."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:123
+msgid "Issue token"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:126
+msgid "Existing tokens"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:132
+msgid "Prefix"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:134
+msgid "User"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:135
+msgid "Last used"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:136
+msgid "Last IP"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:137
+msgid "7-day calls"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:138
+msgid "Expires"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:139
+msgid "Actions"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:144
 msgid "No tokens yet."
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:171
-msgid "never"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:174
-msgid "Test"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:174
-msgid "Live testing of existing tokens is disabled (the plaintext is not stored on the server). Issue a new token or rotate to test."
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:178
-msgid "Rotate this token? The old one will be revoked and a new plaintext will be shown."
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:18
 msgid "Active"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:182
-msgid "Rotate"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:187
-msgid "Revoke this token? It can no longer authenticate, but the audit row stays."
-msgstr ""
-
 #: includes/admin/views/tokens-page.php:19
 msgid "Idle"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:191
-msgid "Revoke"
-msgstr ""
-
 #: includes/admin/views/tokens-page.php:195
-msgid "Permanently delete this token row? This action cannot be undone."
+msgid "never"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:199
-msgid "Delete"
+#: includes/admin/views/tokens-page.php:198
+msgid "Test"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:198
+msgid "Live testing of existing tokens is disabled (the plaintext is not stored on the server). Issue a new token or rotate to test."
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:20
 msgid "Stale"
 msgstr ""
 
+#: includes/admin/views/tokens-page.php:202
+msgid "Rotate this token? The old one will be revoked and a new plaintext will be shown."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:206
+msgid "Rotate"
+msgstr ""
+
 #: includes/admin/views/tokens-page.php:21
 msgid "Expired"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:211
+msgid "Revoke this token? It can no longer authenticate, but the audit row stays."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:215
+msgid "Revoke"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:219
+msgid "Permanently delete this token row? This action cannot be undone."
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:22
 msgid "Revoked"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:233
-msgid "Copied"
+#: includes/admin/views/tokens-page.php:223
+msgid "Delete"
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:25
 msgid "Used in the last 30 days."
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:26
-msgid "Never used yet."
+#: includes/admin/views/tokens-page.php:257
+msgid "Copied"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:266
-msgid "Testing…"
+#: includes/admin/views/tokens-page.php:26
+msgid "Never used yet."
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:27
@@ -507,6 +543,10 @@ msgstr ""
 
 #: includes/admin/views/tokens-page.php:29
 msgid "Revoked — cannot authenticate."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:318
+msgid "Testing…"
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:33
@@ -546,54 +586,30 @@ msgid "Issue new token"
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:71
-#: includes/admin/views/tokens-page.php:106
+#: includes/admin/views/tokens-page.php:130
 msgid "Label"
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:75
-#: includes/admin/views/tokens-page.php:109
+#: includes/admin/views/tokens-page.php:133
 msgid "Scopes"
 msgstr ""
 
 #: includes/admin/views/tokens-page.php:83
-msgid "Bind to WP user (optional)"
+msgid "Run as WP user"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:86
-msgid "When set, the token executes with that user's WordPress capabilities. Use a least-privilege account."
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:90
-msgid "Expires in (days)"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:91
-msgid "0 = never"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:94
-msgid "IP allowlist"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:96
-msgid "One per line. Leave empty to allow any source IP."
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:99
-msgid "Issue token"
-msgstr ""
-
-#: includes/class-admin.php:386
+#: includes/class-admin.php:398
 msgid "Missing or malformed token."
 msgstr ""
 
 #. translators: 1: MCP protocol version returned by the server, 2: round-trip latency in ms
-#: includes/class-admin.php:425
+#: includes/class-admin.php:437
 msgid "OK — MCP %1$s, %2$d ms"
 msgstr ""
 
 #. translators: 1: HTTP status code, 2: error message from server
-#: includes/class-admin.php:431
+#: includes/class-admin.php:443
 msgid "Failed — HTTP %1$d, %2$s"
 msgstr ""
 

@@ -80,10 +80,34 @@ $status_hints = [
                 </td>
             </tr>
             <tr>
-                <th><label for="user_id"><?php esc_html_e( 'Bind to WP user (optional)', 'commander-secure-mcp-control' ); ?></label></th>
+                <th><label for="user_id"><?php esc_html_e( 'Run as WP user', 'commander-secure-mcp-control' ); ?> <span style="color:#b32d2e">*</span></label></th>
                 <td>
-                    <input id="user_id" name="user_id" type="number" min="0" value="0" />
-                    <p class="description"><?php esc_html_e( "When set, the token executes with that user's WordPress capabilities. Use a least-privilege account.", 'commander-secure-mcp-control' ); ?></p>
+                    <select id="cmcp-user-select" style="min-width:280px">
+                        <?php foreach ( (array) $suggested_users as $u ) :
+                            $u_id  = (int) $u->ID;
+                            $roles = get_userdata( $u_id )->roles ?? [];
+                            $tag   = '';
+                            if ( in_array( 'administrator', $roles, true ) ) {
+                                $tag = ' — administrator';
+                            } elseif ( in_array( 'editor', $roles, true ) ) {
+                                $tag = ' — editor';
+                            } elseif ( in_array( 'author', $roles, true ) ) {
+                                $tag = ' — author';
+                            }
+                        ?>
+                            <option value="<?php echo (int) $u_id; ?>" <?php selected( $u_id, $current_admin_id ); ?>>
+                                #<?php echo (int) $u_id; ?> — <?php echo esc_html( $u->user_login ); ?><?php echo esc_html( $tag ); ?>
+                            </option>
+                        <?php endforeach; ?>
+                        <option value="-1"><?php esc_html_e( 'Other — enter ID manually…', 'commander-secure-mcp-control' ); ?></option>
+                        <option value="0" style="color:#b32d2e"><?php esc_html_e( '0 — anonymous (only public/read tools)', 'commander-secure-mcp-control' ); ?></option>
+                    </select>
+                    <input id="user_id" name="user_id" type="number" min="0" value="<?php echo (int) $current_admin_id; ?>" style="width:90px;margin-left:8px" />
+                    <p class="description"><?php esc_html_e( "Token executes with this user's WordPress capabilities. Admin-scope tools (plugins / users / settings) ALL require the bound user to actually have those WP capabilities — so pick an Administrator unless you specifically want a limited token.", 'commander-secure-mcp-control' ); ?></p>
+                    <p id="cmcp-user-warning" class="notice notice-warning inline" style="display:none;padding:8px 12px;margin:6px 0 0;border-left-width:4px">
+                        ⚠ <strong><?php esc_html_e( 'This token will have no WordPress user.', 'commander-secure-mcp-control' ); ?></strong>
+                        <?php esc_html_e( 'Every capability-gated tool will fail. Only use this for testing the auth handshake itself.', 'commander-secure-mcp-control' ); ?>
+                    </p>
                 </td>
             </tr>
             <tr>
@@ -242,6 +266,34 @@ $status_hints = [
             }
         } );
     } );
+
+    // "Bind to WP user" picker — sync dropdown with the number input,
+    // and show a big warning if user_id ends up as 0.
+    var sel  = document.getElementById( 'cmcp-user-select' );
+    var inp  = document.getElementById( 'user_id' );
+    var warn = document.getElementById( 'cmcp-user-warning' );
+    function syncWarn() {
+        if ( ! warn ) { return; }
+        warn.style.display = ( parseInt( inp.value, 10 ) === 0 ) ? 'block' : 'none';
+    }
+    if ( sel && inp ) {
+        // Hide manual input by default; show only when "Other" is picked.
+        inp.style.display = 'none';
+        sel.addEventListener( 'change', function () {
+            var v = sel.value;
+            if ( v === '-1' ) {
+                inp.style.display = '';
+                inp.value = '';
+                inp.focus();
+            } else {
+                inp.style.display = 'none';
+                inp.value = v;
+            }
+            syncWarn();
+        } );
+        inp.addEventListener( 'input', syncWarn );
+        syncWarn();
+    }
 
     // Tab switching for snippet panels.
     document.querySelectorAll( '.cmcp-tabs' ).forEach( function ( bar ) {

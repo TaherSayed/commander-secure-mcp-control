@@ -246,6 +246,18 @@ final class Admin {
         $notice = isset( $_GET['notice'] ) ? sanitize_key( wp_unslash( $_GET['notice'] ) ) : '';
         $test_nonce = wp_create_nonce( 'cmcp_test_token' );
         $ajax_url   = admin_url( 'admin-ajax.php' );
+
+        // Suggest privileged WP users for the "Bind to WP user" picker so admins
+        // don't fall into the user_id=0 footgun. Cap at 100 to keep this cheap
+        // on big sites — large user bases can fall back to manually typing an ID.
+        $current_admin_id   = (int) get_current_user_id();
+        $suggested_users    = get_users( [
+            'role__in' => [ 'administrator', 'editor', 'author' ],
+            'orderby'  => 'display_name',
+            'number'   => 100,
+            'fields'   => [ 'ID', 'user_login', 'display_name' ],
+        ] );
+
         include CMCP_DIR . 'includes/admin/views/tokens-page.php';
     }
 

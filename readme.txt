@@ -4,7 +4,7 @@ Tags: mcp, claude, ai, oauth, rest-api
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,13 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 
 == Changelog ==
 
+= 1.5.3 =
+* **Token issuance UX fix.** The "Bind to WP user" field defaulted to `0` (anonymous) — admins kept issuing tokens that passed the scope check but failed every WordPress capability check, giving the impression admin tools were broken. Now:
+  - Field is a dropdown of suggested users (Administrators / Editors / Authors), with the **current admin pre-selected**.
+  - "Other — enter ID manually" option reveals the number input for edge cases.
+  - "0 — anonymous" is still available as the last option (in red), with a live warning banner when picked.
+  - Label clarified: "Run as WP user" with an explanation that admin-scope tools also require the bound user to have the corresponding WP capability.
+
 = 1.5.2 =
 * **Fix:** Critical fatal error on activation in 1.5.1. The new GitHub auto-updater class was named `GitHubUpdater`, but the autoloader's CamelCase→kebab-case regex splits at every lower-to-upper boundary (`tH`, `bU`), so it tried to load `class-git-hub-updater.php` while the actual file is `class-github-updater.php`. Renamed the class to `GithubUpdater` so the filename matches. **Do not run 1.5.1 — install 1.5.2 directly.**
 
@@ -164,6 +171,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 * Initial release. Personal access tokens, scope + capability gating, audit log, rate limiting, SSRF guard on media.upload, 25 built-in tools, WP-CLI command, custom-tool filter.
 
 == Upgrade Notice ==
+
+= 1.5.3 =
+Fixes a footgun in the token form — "Bind to WP user" now defaults to the current admin instead of 0. Existing tokens are not affected.
 
 = 1.5.2 =
 **Critical fix.** v1.5.1 had a fatal-error bug on activation due to a class-name / autoloader mismatch — do not run 1.5.1; install 1.5.2 directly.
