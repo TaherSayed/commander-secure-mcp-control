@@ -1,19 +1,17 @@
-"""Redact identifying info from raw screenshots before committing.
+"""Redact identifying info from captured screenshots.
 
-Usage:
+For each raw *.png in this folder (except *-redacted.png), produces a redacted
+PNG that hides:
+  - The top notification / debug bar Chrome injects
+  - The WordPress admin top bar (site title, username)
+  - The entire left admin sidebar (other plugin names, branding)
+  - Any visible text matching the site domain, the admin username, or a
+    cmcp_ token plaintext (via OCR, blurred)
+
+Run:
     cd docs/screenshots
-    pip install Pillow pytesseract     # pytesseract is optional but recommended
-    # (Install Tesseract binary too — https://github.com/UB-Mannheim/tesseract/wiki on Windows)
-    python redact.py
-
-For each *.png in this folder (skip *-redacted.png), produces *-redacted.png:
-  - Solid bar over the WordPress admin top bar (site title, username)
-  - Solid bar over the sidebar top-left site-logo area
-  - Blur over any text matching 'hbs-it-gmbh' (case-insensitive, OCR'd)
-  - Blur over any text starting with 'cmcp_' followed by hex (token plaintext)
-
-After verifying the *-redacted.png files look right, rename or git-add them
-in place of the originals.
+    python redact.py                # processes everything in place
+    python redact.py 07-dashboard   # processes one
 """
 
 from __future__ import annotations
@@ -31,8 +29,6 @@ except ImportError:
 try:
     import pytesseract
     HAS_OCR = True
-    # Auto-point pytesseract at common Tesseract install paths on Windows
-    # so users don't have to edit PATH. macOS/Linux: assume it's on PATH.
     if os.name == "nt":
         for candidate in (
             os.environ.get("TESSERACT_EXE", ""),
@@ -46,18 +42,25 @@ try:
 except ImportError:
     HAS_OCR = False
     print("note: pytesseract not installed — body-text redaction skipped.")
-    print("      Install Pillow + pytesseract + the Tesseract binary for full coverage.")
 
 HERE = Path(__file__).parent
-ADMIN_BAR_HEIGHT = 32        # WP admin bar runs across the top
-SIDEBAR_LOGO_BOX = (0, 32, 130, 92)  # top-left site-logo block inside the dark sidebar
-DARK_GRAY = (29, 35, 39)
+
+# Layout constants tuned for 1936×856 captures (Chrome window cropped of its
+# own UI). Adjust if your captures are a different size.
+NOTIF_BAR_HEIGHT = 26          # Chrome's "MCP debug" notification yellow strip
+WP_ADMIN_BAR_HEIGHT = 60       # WordPress admin top bar (incl. icons row)
+SIDEBAR_WIDTH = 170            # Left admin sidebar (other plugins, branding)
+DARK_BG = (29, 35, 39)         # WP admin dark background colour
+ACCENT = (10, 61, 98)          # Commander brand colour
 BLUR_RADIUS = 9
 PAD = 4
 
 TOKEN_RE = re.compile(r"^cmcp_[a-f0-9]{8,}$", re.IGNORECASE)
 DOMAIN_NEEDLES = ("hbs-it-gmbh",)
 USERNAME_NEEDLES = ("it-team-admin",)
+
+
+URL_NEEDLES = ("https://", "http://", "://", "hbs", "gmbh", "wp-json", ".well-known")
 
 
 def needs_redact(text: str) -> bool:
@@ -70,58 +73,105 @@ def needs_redact(text: str) -> bool:
         return True
     if TOKEN_RE.match(t):
         return True
+    # Any URL-ish fragment — OCR splits monospace URLs into many pieces.
+    if any(n in t for n in URL_NEEDLES):
+        return True
     return False
 
 
 def redact_image(src: Path, dst: Path) -> None:
     img = Image.open(src).convert("RGB")
-    draw = ImageDraw.Draw(img)
     w, h = img.size
+    draw = ImageDraw.Draw(img)
 
-    # Always-mask: WP admin bar (top strip).
-    draw.rectangle([0, 0, w, ADMIN_BAR_HEIGHT], fill=DARK_GRAY)
+    # Always-mask: top notification + WP admin bar
+    top_band = NOTIF_BAR_HEIGHT + WP_ADMIN_BAR_HEIGHT
+    draw.rectangle([0, 0, w, top_band], fill=DARK_BG)
 
-    # Always-mask: top-left site-logo area inside the sidebar.
-    draw.rectangle(list(SIDEBAR_LOGO_BOX), fill=DARK_GRAY)
+    # Always-mask: entire left admin sidebar
+    draw.rectangle([0, top_band, SIDEBAR_WIDTH, h], fill=DARK_BG)
 
-    blurred_count = 0
+    # Add a small "MCP" marker so the sidebar isn't pure black — visual
+    # affordance that something is hidden by design.
+    try:
+        draw.rectangle(
+            [SIDEBAR_WIDTH - 28, top_band + 6, SIDEBAR_WIDTH - 6, top_band + 28],
+            fill=ACCENT,
+        )
+        draw.text((SIDEBAR_WIDTH - 24, top_band + 9), "C", fill=(255, 255, 255))
+    except Exception:
+        pass  # font load failures are fine
+
+    blurred = 0
     if HAS_OCR:
-        data = pytesseract.image_to_data(img, output_type=pytesseract.Output.DICT)
+        # OCR only the right-hand region (content area) to keep it fast and
+        # avoid OCR'ing the now-blacked-out sidebar/topbar.
+        content_box = (SIDEBAR_WIDTH, top_band, w, h)
+        sub = img.crop(content_box)
+        # Tesseract sometimes splits URLs across tokens; --psm 11 (sparse text)
+        # and -c preserve_interword_spaces=1 help keep them whole.
+        ocr_config = "--psm 11 -c preserve_interword_spaces=1"
+        data = pytesseract.image_to_data(
+            sub, config=ocr_config, output_type=pytesseract.Output.DICT
+        )
+        # Group adjacent tokens on the same line so a URL split across multiple
+        # OCR words still gets blurred as one region.
+        lines = {}
         for i, raw in enumerate(data["text"]):
-            if not needs_redact(raw):
+            if not raw.strip():
                 continue
-            x = int(data["left"][i]) - PAD
-            y = int(data["top"][i])  - PAD
-            ww = int(data["width"][i]) + PAD * 2
-            hh = int(data["height"][i]) + PAD * 2
-            x0, y0 = max(0, x), max(0, y)
-            x1, y1 = min(w, x + ww), min(h, y + hh)
+            key = (data["block_num"][i], data["par_num"][i],
+                   data["line_num"][i])
+            lines.setdefault(key, []).append(i)
+        for ixs in lines.values():
+            joined = " ".join(data["text"][i] for i in ixs)
+            if not needs_redact(joined) and not any(needs_redact(data["text"][i]) for i in ixs):
+                continue
+            x0 = min(int(data["left"][i])  for i in ixs) + content_box[0] - PAD
+            y0 = min(int(data["top"][i])   for i in ixs) + content_box[1] - PAD
+            x1 = max(int(data["left"][i]) + int(data["width"][i])  for i in ixs) + content_box[0] + PAD
+            y1 = max(int(data["top"][i])  + int(data["height"][i]) for i in ixs) + content_box[1] + PAD
+            x0, y0 = max(0, x0), max(0, y0)
+            x1, y1 = min(w, x1), min(h, y1)
             if x1 <= x0 or y1 <= y0:
                 continue
-            region = img.crop((x0, y0, x1, y1))
-            region = region.filter(ImageFilter.GaussianBlur(radius=BLUR_RADIUS))
+            region = img.crop((x0, y0, x1, y1)).filter(
+                ImageFilter.GaussianBlur(radius=BLUR_RADIUS)
+            )
             img.paste(region, (x0, y0))
-            blurred_count += 1
+            blurred += 1
 
     img.save(dst, optimize=True)
-    print(f"  {src.name:30s}  -> {dst.name}   (blurred {blurred_count} text regions)")
+    print(f"  {src.name:32s} -> {dst.name}  ({w}x{h}, {blurred} text regions blurred)")
 
 
 def main():
-    sources = sorted(p for p in HERE.glob("*.png") if not p.stem.endswith("-redacted"))
+    args = sys.argv[1:]
+    if args:
+        sources = []
+        for a in args:
+            p = HERE / (a if a.endswith(".png") else a + ".png")
+            if p.exists():
+                sources.append(p)
+            else:
+                print(f"skip (not found): {p.name}")
+    else:
+        sources = sorted(
+            p for p in HERE.glob("*.png")
+            if not p.stem.endswith("-redacted")
+        )
     if not sources:
-        print("No PNG files found in", HERE)
-        print("Drop raw screenshots here first (e.g. 01-upload-plugin.png, 06-setup-complete.png).")
+        print("No PNG files to process.")
         return
-    print(f"Processing {len(sources)} screenshot(s)...")
+    print(f"Processing {len(sources)} file(s)...")
     for src in sources:
         dst = src.with_name(src.stem + "-redacted.png")
         redact_image(src, dst)
     print()
-    print("Done.  Review the *-redacted.png files.  If they look good:")
-    print("  - delete the originals (which leak the site domain)")
-    print("  - rename *-redacted.png to drop the suffix")
-    print("  - git add docs/screenshots/*.png")
+    print("Done. Review the *-redacted.png files. If they look good:")
+    print("  rm *.png-not-redacted")
+    print("  rename *-redacted.png to drop the suffix")
+    print("  git add -A && git commit -m 'docs: walkthrough screenshots'")
 
 
 if __name__ == "__main__":
