@@ -55,9 +55,19 @@ ACCENT = (10, 61, 98)          # Commander brand colour
 BLUR_RADIUS = 9
 PAD = 4
 
-TOKEN_RE = re.compile(r"^cmcp_[a-f0-9]{8,}$", re.IGNORECASE)
+TOKEN_RE = re.compile(r"cmcp_[a-f0-9]{4,}", re.IGNORECASE)
 DOMAIN_NEEDLES = ("hbs-it-gmbh",)
 USERNAME_NEEDLES = ("it-team-admin",)
+
+# Per-file extra hard-mask rectangles. The token reveal box on the
+# "Setup complete" screen is on a dark background that OCR can't read, so
+# we mask it geometrically.
+PER_FILE_MASKS = {
+    "06-setup-complete.png": [
+        # token reveal box — dark band with green plaintext
+        (200, 430, 1252, 495),
+    ],
+}
 
 
 URL_NEEDLES = ("https://", "http://", "://", "hbs", "gmbh", "wp-json", ".well-known")
@@ -71,7 +81,7 @@ def needs_redact(text: str) -> bool:
         return True
     if any(n in t for n in USERNAME_NEEDLES):
         return True
-    if TOKEN_RE.match(t):
+    if TOKEN_RE.search(t):
         return True
     # Any URL-ish fragment — OCR splits monospace URLs into many pieces.
     if any(n in t for n in URL_NEEDLES):
@@ -141,8 +151,14 @@ def redact_image(src: Path, dst: Path) -> None:
             img.paste(region, (x0, y0))
             blurred += 1
 
+    # Apply per-file geometric masks (e.g. token reveal box on file 06).
+    extra = PER_FILE_MASKS.get(src.name, [])
+    for x0, y0, x1, y1 in extra:
+        draw.rectangle([x0, y0, x1, y1], fill=DARK_BG)
+
     img.save(dst, optimize=True)
-    print(f"  {src.name:32s} -> {dst.name}  ({w}x{h}, {blurred} text regions blurred)")
+    print(f"  {src.name:32s} -> {dst.name}  ({w}x{h}, {blurred} text regions blurred"
+          f"{', ' + str(len(extra)) + ' hard-masked rect(s)' if extra else ''})")
 
 
 def main():
