@@ -2,7 +2,9 @@
 /**
  * OAuth Clients admin page.
  *
- * @var array $clients
+ * @var array  $clients
+ * @var array  $active_tokens
+ * @var string $notice
  *
  * @package WPCommander
  */
@@ -21,6 +23,10 @@ $mcp_url    = rest_url( CMCP_REST_NAMESPACE . '/rpc' );
 <div class="wrap">
     <h1><?php esc_html_e( 'Commander — OAuth Clients', 'mcp-for-claude' ); ?></h1>
     <p class="description"><?php esc_html_e( 'OAuth 2.1 apps (claude.ai etc.) that have registered with this server via Dynamic Client Registration.', 'mcp-for-claude' ); ?></p>
+
+    <?php if ( $notice === 'token_revoked' ) : ?>
+        <div class="notice notice-info is-dismissible"><p><?php esc_html_e( 'OAuth token revoked.', 'mcp-for-claude' ); ?></p></div>
+    <?php endif; ?>
 
     <div class="notice notice-info">
         <p style="margin-bottom:4px"><strong><?php esc_html_e( 'For claude.ai web (Settings → Connectors → + Add custom connector):', 'mcp-for-claude' ); ?></strong></p>
@@ -73,17 +79,66 @@ $mcp_url    = rest_url( CMCP_REST_NAMESPACE . '/rpc' );
                 <td><?php echo (int) ( $c['active_tokens'] ?? 0 ); ?></td>
                 <td><?php echo esc_html( $c['created_at'] ); ?></td>
                 <td>
-                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline" onsubmit="return confirm('Revoke ALL active tokens for this client?');">
+                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline" onsubmit="return confirm('<?php echo esc_js( __( 'Revoke ALL active tokens for this client?', 'mcp-for-claude' ) ); ?>');">
                         <input type="hidden" name="action" value="cmcp_oauth_revoke_tokens" />
                         <input type="hidden" name="client_id" value="<?php echo esc_attr( $c['client_id'] ); ?>" />
                         <?php wp_nonce_field( 'cmcp_oauth_revoke_tokens' ); ?>
                         <button class="button" type="submit"><?php esc_html_e( 'Revoke tokens', 'mcp-for-claude' ); ?></button>
                     </form>
-                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline" onsubmit="return confirm('Delete this client and revoke its tokens? It will need to re-authorize.');">
+                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline" onsubmit="return confirm('<?php echo esc_js( __( 'Delete this client and revoke its tokens? It will need to re-authorize.', 'mcp-for-claude' ) ); ?>');">
                         <input type="hidden" name="action" value="cmcp_oauth_delete_client" />
                         <input type="hidden" name="client_id" value="<?php echo esc_attr( $c['client_id'] ); ?>" />
                         <?php wp_nonce_field( 'cmcp_oauth_delete_client' ); ?>
                         <button class="button button-link-delete" type="submit"><?php esc_html_e( 'Delete client', 'mcp-for-claude' ); ?></button>
+                    </form>
+                </td>
+            </tr>
+        <?php endforeach; endif; ?>
+        </tbody>
+    </table>
+
+    <h2 style="margin-top:30px"><?php esc_html_e( 'Active OAuth sessions', 'mcp-for-claude' ); ?></h2>
+    <p class="description"><?php esc_html_e( 'Individual access tokens issued to clients via the OAuth flow. Use "Revoke" to kill a single session without deleting the parent client.', 'mcp-for-claude' ); ?></p>
+    <table class="widefat striped">
+        <thead>
+            <tr>
+                <th><?php esc_html_e( 'Client', 'mcp-for-claude' ); ?></th>
+                <th><?php esc_html_e( 'WP user', 'mcp-for-claude' ); ?></th>
+                <th><?php esc_html_e( 'Scopes', 'mcp-for-claude' ); ?></th>
+                <th><?php esc_html_e( 'Issued', 'mcp-for-claude' ); ?></th>
+                <th><?php esc_html_e( 'Last used', 'mcp-for-claude' ); ?></th>
+                <th><?php esc_html_e( 'Access expires', 'mcp-for-claude' ); ?></th>
+                <th><?php esc_html_e( 'Refresh expires', 'mcp-for-claude' ); ?></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php if ( empty( $active_tokens ) ) : ?>
+            <tr><td colspan="8"><?php esc_html_e( 'No active OAuth sessions right now.', 'mcp-for-claude' ); ?></td></tr>
+        <?php else : foreach ( $active_tokens as $t ) :
+            $user = (int) $t['user_id'] ? get_user_by( 'id', (int) $t['user_id'] ) : null;
+        ?>
+            <tr>
+                <td>
+                    <strong><?php echo esc_html( (string) ( $t['client_name'] ?? '?' ) ); ?></strong><br>
+                    <code style="font-size:10px;color:#646970"><?php echo esc_html( $t['client_id'] ); ?></code>
+                </td>
+                <td><?php echo $user ? esc_html( $user->user_login ) . ' <span style="color:#646970">#' . (int) $t['user_id'] . '</span>' : '<span style="color:#a7aaad">—</span>'; ?></td>
+                <td>
+                    <?php foreach ( array_filter( array_map( 'trim', explode( ',', (string) $t['scopes'] ) ) ) as $sc ) : ?>
+                        <span class="cmcp-badge <?php echo esc_attr( $sc ); ?>"><?php echo esc_html( $sc ); ?></span>
+                    <?php endforeach; ?>
+                </td>
+                <td><code style="font-size:11px"><?php echo esc_html( $t['created_at'] ); ?></code></td>
+                <td><?php echo $t['last_used_at'] ? '<code style="font-size:11px">' . esc_html( $t['last_used_at'] ) . '</code>' : '<span style="color:#a7aaad">—</span>'; ?></td>
+                <td><code style="font-size:11px"><?php echo esc_html( $t['access_expires_at'] ); ?></code></td>
+                <td><code style="font-size:11px"><?php echo esc_html( $t['refresh_expires_at'] ?: '—' ); ?></code></td>
+                <td>
+                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline" onsubmit="return confirm('<?php echo esc_js( __( 'Revoke this OAuth session?', 'mcp-for-claude' ) ); ?>');">
+                        <input type="hidden" name="action" value="cmcp_oauth_revoke_one" />
+                        <input type="hidden" name="oauth_token_id" value="<?php echo (int) $t['id']; ?>" />
+                        <?php wp_nonce_field( 'cmcp_oauth_revoke_one' ); ?>
+                        <button class="button button-small" type="submit"><?php esc_html_e( 'Revoke', 'mcp-for-claude' ); ?></button>
                     </form>
                 </td>
             </tr>

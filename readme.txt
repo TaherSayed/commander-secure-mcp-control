@@ -4,7 +4,7 @@ Tags: mcp, claude, ai, oauth, rest-api
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.6.3
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,13 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 
 == Changelog ==
 
+= 1.7.0 =
+* **OAuth sessions are now visible.** A new "Active OAuth sessions" table on the OAuth Clients page lists every individual access token issued through the OAuth flow — client, bound WP user, scopes, issued / last-used / access-expires / refresh-expires timestamps — with a per-row Revoke action that kills one session without deleting the parent client.
+* **Audit log filters + pagination.** Filter form for status, method, tool, IP, date range, free-text search across method/tool/note/ip. Results paginated at 50 per page. Default view is the most recent page.
+* **Audit log CSV export.** New "Export CSV" button streams up to the last 50 000 audit rows as a downloadable `commander-audit-YYYYMMDD-HHMMSS.csv`.
+* **Bot user banner** on the Tokens page — surfaces the `wp-commander-bot` service account (if the setup wizard created it) with role + Edit-user link, and explains when to bind tokens to it.
+* **Audit log noise dedup.** The post-OAuth-refresh `(pre-auth) cmcp_invalid_token` cascade (caused by the SDK retrying with a now-revoked stale token) is now deduplicated to one row per IP per minute when there's been a successful OAuth token issuance from the same IP in the same window.
+
 = 1.6.3 =
 * **Fix:** OAuth consent screen and HTML error pages were being JSON-encoded by WordPress's REST API serializer (which always `wp_json_encode`s the response body even when `Content-Type: text/html` is set). Browsers received a quoted JSON string instead of HTML and rendered an empty page. `html_response()` and `raw_redirect()` now `echo`+`exit` to bypass the REST serializer entirely.
 
@@ -187,6 +194,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 * Initial release. Personal access tokens, scope + capability gating, audit log, rate limiting, SSRF guard on media.upload, 25 built-in tools, WP-CLI command, custom-tool filter.
 
 == Upgrade Notice ==
+
+= 1.7.0 =
+Major UX additions: OAuth sessions view + per-session revoke, audit log filters / search / pagination / CSV export, bot user banner, dedup of post-refresh 401 noise. No DB schema change.
 
 = 1.6.3 =
 Fixes OAuth consent screen rendering as blank/garbled. Required for any client (Claude Desktop, Claude Code) connecting via OAuth.

@@ -30,6 +30,8 @@ final class Admin {
         add_action( 'wp_ajax_cmcp_test_webhook',     [ $this, 'ajax_test_webhook' ] );
         add_action( 'admin_post_cmcp_oauth_delete_client',  [ $this, 'handle_oauth_delete_client' ] );
         add_action( 'admin_post_cmcp_oauth_revoke_tokens',  [ $this, 'handle_oauth_revoke_tokens' ] );
+        add_action( 'admin_post_cmcp_oauth_revoke_one',     [ $this, 'handle_oauth_revoke_one' ] );
+        add_action( 'admin_post_cmcp_audit_export',         [ $this, 'handle_audit_export' ] );
         // Wizard hooks.
         Wizard::init();
     }
@@ -265,15 +267,106 @@ final class Admin {
         if ( ! current_user_can( 'manage_options' ) ) {
             return;
         }
-        $rows = Logger::recent( 200 );
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only filter display, capability check above.
+        $filters = [
+            'q'        => isset( $_GET['q'] )       ? sanitize_text_field( wp_unslash( $_GET['q'] ) )       : '',
+            'status'   => isset( $_GET['status'] )  ? sanitize_key( wp_unslash( $_GET['status'] ) )         : '',
+            'method'   => isset( $_GET['method'] )  ? sanitize_text_field( wp_unslash( $_GET['method'] ) )  : '',
+            'tool'     => isset( $_GET['tool'] )    ? sanitize_text_field( wp_unslash( $_GET['tool'] ) )    : '',
+            'ip'       => isset( $_GET['ip'] )      ? sanitize_text_field( wp_unslash( $_GET['ip'] ) )      : '',
+            'from'     => isset( $_GET['from'] )    ? sanitize_text_field( wp_unslash( $_GET['from'] ) )    : '',
+            'to'       => isset( $_GET['to'] )      ? sanitize_text_field( wp_unslash( $_GET['to'] ) )      : '',
+            'page'     => isset( $_GET['p'] )       ? max( 1, (int) wp_unslash( $_GET['p'] ) )              : 1,
+            'per_page' => 50,
+        ];
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended
+        $result = Logger::recent( 200, $filters );
+        $rows   = $result['items'];
+        $total  = $result['total'];
+        $page   = $result['page'];
+        $per    = $result['per_page'];
+        $pages  = max( 1, (int) ceil( $total / $per ) );
         include CMCP_DIR . 'includes/admin/views/log-page.php';
+    }
+
+    /**
+     * Stream the audit log as CSV.
+     */
+    public function handle_audit_export(): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Forbidden', 403 );
+        }
+        check_admin_referer( 'cmcp_audit_export' );
+
+        global $wpdb;
+        $table = $wpdb->prefix . Plugin::TABLE_AUDIT;
+        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom plugin tables.
+        $rows = (array) $wpdb->get_results(
+            "SELECT id, ts, token_id, ip, method, tool, success, status_code, note
+              FROM {$table}
+              ORDER BY id DESC
+              LIMIT 50000",
+            ARRAY_A
+        );
+        // phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+        $filename = 'commander-audit-' . gmdate( 'Ymd-His' ) . '.csv';
+        nocache_headers();
+        header( 'Content-Type: text/csv; charset=utf-8' );
+        header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+        $out = fopen( 'php://output', 'w' );
+        fputcsv( $out, [ 'id', 'ts_utc', 'token_id', 'ip', 'method', 'tool', 'success', 'status', 'note' ] );
+        foreach ( $rows as $r ) {
+            fputcsv( $out, $r );
+        }
+        fclose( $out );
+        exit;
+    }
+
+    /**
+     * Revoke a single OAuth-issued access/refresh token row.
+     */
+    public function handle_oauth_revoke_one(): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Forbidden', 403 );
+        }
+        check_admin_referer( 'cmcp_oauth_revoke_one' );
+        $id = isset( $_POST['oauth_token_id'] ) ? absint( wp_unslash( $_POST['oauth_token_id'] ) ) : 0;
+        if ( $id ) {
+            global $wpdb;
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom plugin tables.
+            $wpdb->update(
+                $wpdb->prefix . Plugin::TABLE_OAUTH_TOKENS,
+                [ 'revoked_at' => gmdate( 'Y-m-d H:i:s' ) ],
+                [ 'id' => $id ],
+                [ '%s' ], [ '%d' ]
+            );
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+        }
+        wp_safe_redirect( admin_url( 'admin.php?page=cmcp-oauth&notice=token_revoked' ) );
+        exit;
     }
 
     public function render_oauth(): void {
         if ( ! current_user_can( 'manage_options' ) ) {
             return;
         }
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display-only notice flag.
+        $notice = isset( $_GET['notice'] ) ? sanitize_key( wp_unslash( $_GET['notice'] ) ) : '';
         global $wpdb;
+        // Active OAuth-issued tokens, joined to client + WP user.
+        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom plugin tables.
+        $active_tokens = $wpdb->get_results(
+            "SELECT t.id, t.client_id, t.user_id, t.scopes, t.access_expires_at, t.refresh_expires_at,
+                    t.last_used_at, t.created_at,
+                    c.name AS client_name
+             FROM {$wpdb->prefix}" . Plugin::TABLE_OAUTH_TOKENS . " t
+             LEFT JOIN {$wpdb->prefix}" . Plugin::TABLE_OAUTH_CLIENTS . " c ON c.client_id = t.client_id
+             WHERE t.revoked_at IS NULL AND t.access_expires_at > NOW()
+             ORDER BY t.id DESC LIMIT 100",
+            ARRAY_A
+        );
+        // phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
         $clients = $wpdb->get_results(
             "SELECT c.*,
                 (SELECT COUNT(*) FROM {$wpdb->prefix}" . Plugin::TABLE_OAUTH_TOKENS . " t
