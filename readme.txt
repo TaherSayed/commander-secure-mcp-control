@@ -4,7 +4,7 @@ Tags: mcp, claude, ai, oauth, rest-api
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -117,6 +117,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 5. Audit Log — every call, with token id, IP, JSON-RPC method, tool, status, note.
 
 == Changelog ==
+
+= 1.7.1 =
+* **Add:** Bot user banner on the Tokens page — surfaces the `wp-commander-bot` service account (when present) with role + Edit-user link. The banner was advertised in the 1.7.0 changelog but the view edit was lost from that commit; this release restores it.
 
 = 1.7.0 =
 * **OAuth sessions are now visible.** A new "Active OAuth sessions" table on the OAuth Clients page lists every individual access token issued through the OAuth flow — client, bound WP user, scopes, issued / last-used / access-expires / refresh-expires timestamps — with a per-row Revoke action that kills one session without deleting the parent client.

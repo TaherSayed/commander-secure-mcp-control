@@ -28,9 +28,25 @@ $status_hints = [
     'expired' => __( 'Past its expiry date.',             'mcp-for-claude' ),
     'revoked' => __( 'Revoked — cannot authenticate.',    'mcp-for-claude' ),
 ];
+
+$bot_user = get_user_by( 'login', 'wp-commander-bot' );
 ?>
 <div class="wrap">
     <h1><?php esc_html_e( 'Commander — Tokens', 'mcp-for-claude' ); ?></h1>
+
+    <?php if ( $bot_user ) : ?>
+        <div class="notice notice-info inline" style="margin:10px 0;padding:10px 14px">
+            <p style="margin:0">
+                🤖 <strong><?php esc_html_e( 'Service account:', 'mcp-for-claude' ); ?></strong>
+                <code><?php echo esc_html( $bot_user->user_login ); ?></code>
+                <span style="color:#646970"><?php echo esc_html( ' · #' . (int) $bot_user->ID . ' · ' . implode( ', ', (array) $bot_user->roles ) ); ?></span>
+                · <a href="<?php echo esc_url( admin_url( 'user-edit.php?user_id=' . (int) $bot_user->ID ) ); ?>"><?php esc_html_e( 'Edit user', 'mcp-for-claude' ); ?></a>
+            </p>
+            <p class="description" style="margin:4px 0 0">
+                <?php esc_html_e( 'Auto-created by the setup wizard. Bind your read-only / monitoring tokens to this account so they execute with administrator capabilities without exposing a real human user.', 'mcp-for-claude' ); ?>
+            </p>
+        </div>
+    <?php endif; ?>
 
     <?php if ( $notice === 'revoked' ) : ?>
         <div class="notice notice-info is-dismissible"><p><?php esc_html_e( 'Token revoked.', 'mcp-for-claude' ); ?></p></div>
