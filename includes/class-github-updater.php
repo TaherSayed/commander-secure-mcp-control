@@ -22,7 +22,7 @@ namespace CMCP;
 
 defined( 'ABSPATH' ) || exit;
 
-final class GitHubUpdater {
+final class GithubUpdater {
 
     /** GitHub repo slug — owner/name. */
     public const REPO = 'TaherSayed/commander-secure-mcp-control';

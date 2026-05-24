@@ -58,7 +58,7 @@ final class Plugin {
 
         // GitHub release auto-updater. Yields to WP.org's channel automatically
         // once the plugin is published there (their filter runs after ours).
-        GitHubUpdater::init();
+        GithubUpdater::init();
 
         // Admin UI.
         if ( is_admin() ) {

@@ -4,7 +4,7 @@ Tags: mcp, claude, ai, oauth, rest-api
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 
 == Changelog ==
 
+= 1.5.2 =
+* **Fix:** Critical fatal error on activation in 1.5.1. The new GitHub auto-updater class was named `GitHubUpdater`, but the autoloader's CamelCase→kebab-case regex splits at every lower-to-upper boundary (`tH`, `bU`), so it tried to load `class-git-hub-updater.php` while the actual file is `class-github-updater.php`. Renamed the class to `GithubUpdater` so the filename matches. **Do not run 1.5.1 — install 1.5.2 directly.**
+
 = 1.5.1 =
 * **GitHub auto-updater** — once installed, the plugin polls api.github.com/repos/TaherSayed/commander-secure-mcp-control/releases/latest at most every 12 hours and surfaces new versions through WordPress's standard "Update available" banner. One-click update preserves all data. Yields to WordPress.org's update channel automatically once published there.
 * "View details" modal shows the GitHub release notes for the new version.
@@ -161,6 +164,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 * Initial release. Personal access tokens, scope + capability gating, audit log, rate limiting, SSRF guard on media.upload, 25 built-in tools, WP-CLI command, custom-tool filter.
 
 == Upgrade Notice ==
+
+= 1.5.2 =
+**Critical fix.** v1.5.1 had a fatal-error bug on activation due to a class-name / autoloader mismatch — do not run 1.5.1; install 1.5.2 directly.
 
 = 1.5.1 =
 Adds GitHub auto-updater — every future release will appear as a standard "Update available" notification on your Plugins page. **Install this version once manually (Replace via upload) and every release after 1.5.1 updates automatically.**
