@@ -274,6 +274,11 @@ final class OAuth {
             return self::redirect_with_error( $params['redirect_uri'], $err[0], $err[1], $params['state'] );
         }
 
+        // Authenticate via WP browser cookie. REST endpoints normally require a
+        // nonce header for cookie auth — we don't, because this URL is hit by
+        // direct browser navigation in the OAuth flow.
+        self::maybe_login_from_cookie();
+
         // Force WP login if needed.
         if ( ! is_user_logged_in() ) {
             $self_url = self::current_request_url();
@@ -291,6 +296,8 @@ final class OAuth {
         if ( ! RateLimiter::by_ip( 'oauth_authorize_post', 20 ) ) {
             return self::html_response( self::render_error_page( 'Too many requests. Please slow down.' ), 429 );
         }
+
+        self::maybe_login_from_cookie();
 
         if ( ! is_user_logged_in() ) {
             return self::html_response( self::render_error_page( 'You must be logged in.' ), 401 );
@@ -898,6 +905,32 @@ final class OAuth {
      * Host / X-Forwarded-Host headers (which an attacker can spoof and use
      * to redirect the consent form to a third-party host).
      */
+    /**
+     * Set the current WP user from the browser auth cookie when we're in a
+     * REST context. WordPress's REST API normally only honors cookie auth if
+     * the request also carries an X-WP-Nonce header — which a top-level
+     * browser navigation to /wp-json/.../oauth/authorize does NOT. Without
+     * this, `is_user_logged_in()` returns false even for a logged-in admin
+     * and the OAuth flow bounces back to wp-login.
+     *
+     * Safe: wp_validate_auth_cookie verifies the HMAC signature on the
+     * LOGGED_IN_COOKIE — we're not bypassing auth, just plumbing the user
+     * id through when the cookie is genuinely valid.
+     */
+    private static function maybe_login_from_cookie(): void {
+        if ( is_user_logged_in() ) {
+            return;
+        }
+        if ( ! defined( 'LOGGED_IN_COOKIE' ) ) {
+            wp_cookie_constants();
+        }
+        // wp_validate_auth_cookie reads from $_COOKIE when first arg is empty.
+        $user_id = (int) wp_validate_auth_cookie( '', 'logged_in' );
+        if ( $user_id > 0 ) {
+            wp_set_current_user( $user_id );
+        }
+    }
+
     private static function current_request_url(): string {
         $uri = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
         $path_qs = (string) wp_parse_url( $uri, PHP_URL_PATH );

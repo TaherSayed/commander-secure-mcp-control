@@ -4,7 +4,7 @@ Tags: mcp, claude, ai, oauth, rest-api
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 
 == Changelog ==
 
+= 1.5.4 =
+* **Fix:** OAuth consent screen bounced logged-in admins back to wp-login on sites where the REST API is hit by direct browser navigation. WordPress's REST routes only honor cookie auth when the request carries an X-WP-Nonce header — which a top-level navigation does not. `OAuth::rest_authorize_get/post` now manually calls `wp_validate_auth_cookie` to set the current WP user from the browser cookie. Fully verified (HMAC-signed cookie); not an auth bypass.
+
 = 1.5.3 =
 * **Token issuance UX fix.** The "Bind to WP user" field defaulted to `0` (anonymous) — admins kept issuing tokens that passed the scope check but failed every WordPress capability check, giving the impression admin tools were broken. Now:
   - Field is a dropdown of suggested users (Administrators / Editors / Authors), with the **current admin pre-selected**.
@@ -171,6 +174,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 * Initial release. Personal access tokens, scope + capability gating, audit log, rate limiting, SSRF guard on media.upload, 25 built-in tools, WP-CLI command, custom-tool filter.
 
 == Upgrade Notice ==
+
+= 1.5.4 =
+Fix: OAuth consent screen now recognises your existing WordPress login session (was bouncing logged-in admins back to wp-login). Required if you use security plugins that move the login URL.
 
 = 1.5.3 =
 Fixes a footgun in the token form — "Bind to WP user" now defaults to the current admin instead of 0. Existing tokens are not affected.
