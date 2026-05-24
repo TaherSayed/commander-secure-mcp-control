@@ -4,7 +4,7 @@ Tags: mcp, claude, ai, oauth, rest-api
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -117,6 +117,9 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 5. Audit Log — every call, with token id, IP, JSON-RPC method, tool, status, note.
 
 == Changelog ==
+
+= 1.7.2 =
+* **Fix:** OAuth `service_documentation` (RFC 8414) and `resource_documentation` (RFC 9728) URLs were hardcoded to the author's site. They now default to the project's canonical GitHub URL and can be overridden per-site via the new `cmcp_oauth_service_documentation` and `cmcp_oauth_resource_documentation` filters. All other endpoints already auto-detect the install site via `home_url()` / `rest_url()`.
 
 = 1.7.1 =
 * **Add:** Bot user banner on the Tokens page — surfaces the `wp-commander-bot` service account (when present) with role + Edit-user link. The banner was advertised in the 1.7.0 changelog but the view edit was lost from that commit; this release restores it.

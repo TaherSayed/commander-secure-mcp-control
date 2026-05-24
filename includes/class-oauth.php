@@ -144,7 +144,13 @@ final class OAuth {
             'code_challenge_methods_supported'      => [ 'S256' ],
             'token_endpoint_auth_methods_supported' => [ 'none', 'client_secret_basic', 'client_secret_post' ],
             'scopes_supported'                      => self::SCOPES,
-            'service_documentation'                 => 'https://hbs-it-gmbh.de/wp-commander',
+            /**
+             * Filter the OAuth Authorization Server `service_documentation` URL.
+             * Defaults to the project's GitHub repository. Site owners can override.
+             *
+             * @param string $url Documentation URL.
+             */
+            'service_documentation'                 => (string) apply_filters( 'cmcp_oauth_service_documentation', 'https://github.com/TaherSayed/commander-secure-mcp-control' ),
             'ui_locales_supported'                  => [ 'en', 'de' ],
         ];
     }
@@ -156,7 +162,11 @@ final class OAuth {
             'authorization_servers'   => [ home_url( '/' ) ],
             'scopes_supported'        => self::SCOPES,
             'bearer_methods_supported'=> [ 'header' ],
-            'resource_documentation'  => 'https://hbs-it-gmbh.de/wp-commander',
+            /**
+             * Filter the OAuth Protected Resource `resource_documentation` URL.
+             * Defaults to the project's GitHub repository. Site owners can override.
+             */
+            'resource_documentation'  => (string) apply_filters( 'cmcp_oauth_resource_documentation', 'https://github.com/TaherSayed/commander-secure-mcp-control' ),
         ];
     }
 
