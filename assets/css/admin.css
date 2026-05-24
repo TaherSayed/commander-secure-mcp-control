@@ -263,3 +263,46 @@
 .cmcp-badge.admin { background: #ffe8e8; color: #9b1c1c; }
 .cmcp-badge.ok    { background: #d4f4e8; color: #0a6041; }
 .cmcp-badge.fail  { background: #fde8e8; color: #9b1c1c; }
+
+/* Token status pill */
+.cmcp-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: 1px solid transparent;
+}
+.cmcp-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
+}
+.cmcp-status-active  { background: #e7f7ee; color: #0a6041; border-color: #b6e3c8; }
+.cmcp-status-idle    { background: #eef2f7; color: #4a5566; border-color: #cfd8e3; }
+.cmcp-status-stale   { background: #fff7e6; color: #b26a00; border-color: #f0d3a1; }
+.cmcp-status-expired { background: #f5f5f5; color: #646970; border-color: #d0d0d0; text-decoration: line-through; }
+.cmcp-status-revoked { background: #fde8e8; color: #9b1c1c; border-color: #f5c6c6; }
+.cmcp-status-active  .cmcp-status-dot { animation: cmcp-pulse 2s ease-in-out infinite; }
+@keyframes cmcp-pulse {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(10, 96, 65, 0.15); }
+    50%      { box-shadow: 0 0 0 5px rgba(10, 96, 65, 0.0);  }
+}
+
+/* Token row actions — compact spacing */
+.cmcp-tokens-table .cmcp-row-actions form,
+.cmcp-tokens-table .cmcp-row-actions button {
+    margin-right: 2px;
+}
+.cmcp-tokens-table .cmcp-row-actions .button-small {
+    padding: 0 8px;
+    font-size: 11px;
+    line-height: 22px;
+    height: 24px;
+}

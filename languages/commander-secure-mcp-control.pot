@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Commander — Secure MCP Control 1.3.0\n"
 "Report-Msgid-Bugs-To: https://hbs-it-gmbh.de/wp-commander\n"
-"POT-Creation-Date: 2026-05-24 12:32+0000\n"
+"POT-Creation-Date: 2026-05-24 13:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,440 +13,566 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Domain: commander-secure-mcp-control\n"
-#: claude-mcp-secure.php:35
+"X-Domain: claude-mcp-secure\n"
+#: commander-secure-mcp-control.php:35
 msgid "Claude MCP Secure requires PHP 8.0 or higher."
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:135
+#: includes/admin/views/dashboard-page.php:137
 msgid "HTTPS required"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:135
+#: includes/admin/views/dashboard-page.php:137
 msgid "Reject non-HTTPS requests"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:136
+#: includes/admin/views/dashboard-page.php:138
 msgid "Audit log enabled"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:136
+#: includes/admin/views/dashboard-page.php:138
 msgid "Every call recorded"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:137
+#: includes/admin/views/dashboard-page.php:139
 msgid "Block bad user-agents"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:137
+#: includes/admin/views/dashboard-page.php:139
 msgid "sqlmap, nikto, wpscan, etc."
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:138
-#: includes/admin/views/settings-page.php:151
+#: includes/admin/views/dashboard-page.php:140
+#: includes/admin/views/settings-page.php:153
 msgid "Email alerts"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:138
+#: includes/admin/views/dashboard-page.php:140
 msgid "Lockout & suspicious activity"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:139
+#: includes/admin/views/dashboard-page.php:141
 msgid "Allowed origins set"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:139
+#: includes/admin/views/dashboard-page.php:141
 msgid "DNS rebinding protection"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:140
+#: includes/admin/views/dashboard-page.php:142
 msgid "Destructive ops OFF"
 msgstr ""
 
-#: includes/admin/views/dashboard-page.php:140
+#: includes/admin/views/dashboard-page.php:142
 msgid "Permanent deletes locked"
 msgstr ""
 
-#: includes/admin/views/log-page.php:13
+#: includes/admin/views/log-page.php:14
 msgid "Commander — Audit Log"
 msgstr ""
 
-#: includes/admin/views/log-page.php:14
+#: includes/admin/views/log-page.php:15
 msgid "Showing up to 200 most recent entries."
 msgstr ""
 
-#: includes/admin/views/log-page.php:18
+#: includes/admin/views/log-page.php:19
 msgid "Time (UTC)"
 msgstr ""
 
-#: includes/admin/views/log-page.php:19
+#: includes/admin/views/log-page.php:20
 msgid "Token"
 msgstr ""
 
-#: includes/admin/views/log-page.php:20
+#: includes/admin/views/log-page.php:21
 msgid "IP"
 msgstr ""
 
-#: includes/admin/views/log-page.php:21
+#: includes/admin/views/log-page.php:22
 msgid "Method"
 msgstr ""
 
-#: includes/admin/views/log-page.php:22
+#: includes/admin/views/log-page.php:23
 msgid "Tool"
 msgstr ""
 
-#: includes/admin/views/log-page.php:23
-#: includes/admin/views/tokens-page.php:75
+#: includes/admin/views/log-page.php:24
+#: includes/admin/views/tokens-page.php:101
 msgid "Status"
 msgstr ""
 
-#: includes/admin/views/log-page.php:24
+#: includes/admin/views/log-page.php:25
 msgid "OK"
 msgstr ""
 
-#: includes/admin/views/log-page.php:25
+#: includes/admin/views/log-page.php:26
 msgid "Note"
 msgstr ""
 
-#: includes/admin/views/log-page.php:30
+#: includes/admin/views/log-page.php:31
 msgid "No log entries yet."
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:20
+#: includes/admin/views/oauth-page.php:22
 msgid "Commander — OAuth Clients"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:21
+#: includes/admin/views/oauth-page.php:23
 msgid "OAuth 2.1 apps (claude.ai etc.) that have registered with this server via Dynamic Client Registration."
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:24
+#: includes/admin/views/oauth-page.php:26
 msgid "For claude.ai web (Settings → Connectors → + Add custom connector):"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:26
+#: includes/admin/views/oauth-page.php:28
 msgid "Custom MCP server URL:"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:30
+#: includes/admin/views/oauth-page.php:32
 msgid "Claude will auto-discover OAuth via /.well-known and register itself. After the consent screen, an entry will appear below."
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:34
+#: includes/admin/views/oauth-page.php:36
 msgid "Endpoint reference"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:46
+#: includes/admin/views/oauth-page.php:48
 msgid "Registered clients"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:50
+#: includes/admin/views/oauth-page.php:52
 msgid "Name"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:51
+#: includes/admin/views/oauth-page.php:53
 msgid "Client ID"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:52
+#: includes/admin/views/oauth-page.php:54
 msgid "Redirect URIs"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:53
+#: includes/admin/views/oauth-page.php:55
 msgid "Auth method"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:54
+#: includes/admin/views/oauth-page.php:56
 msgid "Active tokens"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:55
+#: includes/admin/views/oauth-page.php:57
 msgid "Registered"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:61
+#: includes/admin/views/oauth-page.php:63
 msgid "No OAuth clients registered yet. Add a custom connector in claude.ai pointing at the MCP endpoint above — the first authorization will register the client here."
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:78
+#: includes/admin/views/oauth-page.php:80
 msgid "Revoke tokens"
 msgstr ""
 
-#: includes/admin/views/oauth-page.php:84
+#: includes/admin/views/oauth-page.php:86
 msgid "Delete client"
 msgstr ""
 
-#: includes/admin/views/settings-page.php:103
-msgid "Honor X-Forwarded-Proto, X-Forwarded-For and CF-Connecting-IP headers."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:105
-msgid "Only enable this when WordPress sits behind a trusted reverse proxy (Cloudflare, nginx, load balancer). With this off, the plugin uses REMOTE_ADDR — safer when traffic reaches WP directly. With it on, the real client IP can be used for brute-force lockouts even behind a proxy."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:110
-msgid "OAuth"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:113
-msgid "Dynamic Client Registration"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:117
-msgid "Allow anonymous OAuth client registration (RFC 7591)."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:119
-msgid "Required for one-click connect from clients like Claude Desktop. Leave OFF unless you need it: when on, anyone on the internet can register an OAuth client. Tokens are still only issued after an admin approves the consent screen on this site."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:124
-msgid "Audit, alerts & destructive operations"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:127
-msgid "Audit log"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:13
-msgid "Read"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:131
-msgid "Enable audit logging of every MCP call."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:135
-msgid "Keep logs for"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:137
-#: includes/admin/views/settings-page.php:164
-msgid "days."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:142
-msgid "Block scanner user-agents"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:146
-msgid "Reject sqlmap, nikto, wpscan, nmap and other known scanner UAs."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:155
-msgid "Email site admin when an IP is locked out for brute force."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:157
-msgid "Rate-limited to one email per IP per hour. Sent to:"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:161
-msgid "Token rotation warning"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:163
-msgid "Warn on dashboard if a personal token is older than"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:168
-msgid "Allow destructive ops"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:172
-msgid "I understand — permit permanent deletes and sensitive option writes (siteurl, home, admin_email, default_role, permalink_structure, …)."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:174
-msgid "Keep this off unless you specifically need it. The plugin still requires admin scope + WP capability for those calls — this is an extra interlock."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:179
-msgid "Enabled tools"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:24
-msgid "Write"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:33
-msgid "Admin"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:48
-msgid "Commander — Secure MCP Control"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:50
-msgid "Powered by Taher Sayed · HBS IT GmbH"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:54
-msgid "Endpoint:"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:57
-msgid "Discovery:"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:60
-msgid "Protocol version:"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:66
-msgid "Transport security"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:69
-msgid "Require HTTPS"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:73
-msgid "Reject non-HTTPS requests (recommended; localhost is always allowed)."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:78
-msgid "Allowed origins"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:81
-msgid "One origin per line. Same-site is always allowed. Empty Origin headers (server-to-server clients) are accepted."
-msgstr ""
-
-#: includes/admin/views/settings-page.php:85
-msgid "Rate limit"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:88
-msgid "requests / minute / token (0 = unlimited)"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:92
-msgid "Max request size"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:95
-msgid "bytes (raise this if uploading large media)"
-msgstr ""
-
-#: includes/admin/views/settings-page.php:99
+#: includes/admin/views/settings-page.php:101
 msgid "Trust reverse proxy"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:104
-msgid "Revoke"
+#: includes/admin/views/settings-page.php:105
+msgid "Honor X-Forwarded-Proto, X-Forwarded-For and CF-Connecting-IP headers."
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:14
-msgid "Commander — Tokens"
+#: includes/admin/views/settings-page.php:107
+msgid "Only enable this when WordPress sits behind a trusted reverse proxy (Cloudflare, nginx, load balancer). With this off, the plugin uses REMOTE_ADDR — safer when traffic reaches WP directly. With it on, the real client IP can be used for brute-force lockouts even behind a proxy."
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:19
-msgid "Token created. Copy it now — it will not be shown again:"
+#: includes/admin/views/settings-page.php:112
+msgid "OAuth"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:27
-msgid "Issue new token"
+#: includes/admin/views/settings-page.php:115
+msgid "Dynamic Client Registration"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:33
-#: includes/admin/views/tokens-page.php:68
-msgid "Label"
+#: includes/admin/views/settings-page.php:119
+msgid "Allow anonymous OAuth client registration (RFC 7591)."
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:37
-#: includes/admin/views/tokens-page.php:70
-msgid "Scopes"
+#: includes/admin/views/settings-page.php:121
+msgid "Required for one-click connect from clients like Claude Desktop. Leave OFF unless you need it: when on, anyone on the internet can register an OAuth client. Tokens are still only issued after an admin approves the consent screen on this site."
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:45
-msgid "Bind to WP user (optional)"
+#: includes/admin/views/settings-page.php:126
+msgid "Audit, alerts & destructive operations"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:48
-msgid "When set, the token executes with that user's WordPress capabilities. Use a least-privilege account."
+#: includes/admin/views/settings-page.php:129
+msgid "Audit log"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:52
-msgid "Expires in (days)"
+#: includes/admin/views/settings-page.php:133
+msgid "Enable audit logging of every MCP call."
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:53
-msgid "0 = never"
+#: includes/admin/views/settings-page.php:137
+msgid "Keep logs for"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:56
-msgid "IP allowlist"
+#: includes/admin/views/settings-page.php:139
+#: includes/admin/views/settings-page.php:166
+msgid "days."
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:58
-msgid "One per line. Leave empty to allow any source IP."
+#: includes/admin/views/settings-page.php:144
+msgid "Block scanner user-agents"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:61
-msgid "Issue token"
+#: includes/admin/views/settings-page.php:148
+msgid "Reject sqlmap, nikto, wpscan, nmap and other known scanner UAs."
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:64
-msgid "Existing tokens"
+#: includes/admin/views/settings-page.php:15
+msgid "Read"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:69
+#: includes/admin/views/settings-page.php:157
+msgid "Email site admin when an IP is locked out for brute force."
+msgstr ""
+
+#: includes/admin/views/settings-page.php:159
+msgid "Rate-limited to one email per IP per hour. Sent to:"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:163
+msgid "Token rotation warning"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:165
+msgid "Warn on dashboard if a personal token is older than"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:170
+msgid "Allow destructive ops"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:174
+msgid "I understand — permit permanent deletes and sensitive option writes (siteurl, home, admin_email, default_role, permalink_structure, …)."
+msgstr ""
+
+#: includes/admin/views/settings-page.php:176
+msgid "Keep this off unless you specifically need it. The plugin still requires admin scope + WP capability for those calls — this is an extra interlock."
+msgstr ""
+
+#: includes/admin/views/settings-page.php:181
+msgid "Enabled tools"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:26
+msgid "Write"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:35
+msgid "Admin"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:50
+msgid "Commander — Secure MCP Control"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:52
+msgid "Powered by Taher Sayed · HBS IT GmbH"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:56
+msgid "Endpoint:"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:59
+msgid "Discovery:"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:62
+msgid "Protocol version:"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:68
+msgid "Transport security"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:71
+msgid "Require HTTPS"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:75
+msgid "Reject non-HTTPS requests (recommended; localhost is always allowed)."
+msgstr ""
+
+#: includes/admin/views/settings-page.php:80
+msgid "Allowed origins"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:83
+msgid "One origin per line. Same-site is always allowed. Empty Origin headers (server-to-server clients) are accepted."
+msgstr ""
+
+#: includes/admin/views/settings-page.php:87
+msgid "Rate limit"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:90
+msgid "requests / minute / token (0 = unlimited)"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:94
+msgid "Max request size"
+msgstr ""
+
+#: includes/admin/views/settings-page.php:97
+msgid "bytes (raise this if uploading large media)"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:102
 msgid "Prefix"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:71
+#: includes/admin/views/tokens-page.php:104
 msgid "User"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:72
-msgid "Created"
-msgstr ""
-
-#: includes/admin/views/tokens-page.php:73
+#: includes/admin/views/tokens-page.php:105
 msgid "Last used"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:74
+#: includes/admin/views/tokens-page.php:106
+msgid "Last IP"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:107
+msgid "7-day calls"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:108
 msgid "Expires"
 msgstr ""
 
-#: includes/admin/views/tokens-page.php:81
+#: includes/admin/views/tokens-page.php:109
+msgid "Actions"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:114
 msgid "No tokens yet."
 msgstr ""
 
-#: includes/class-admin.php:48
-#: includes/class-admin.php:49
+#: includes/admin/views/tokens-page.php:139
+msgid "never"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:142
+msgid "Test"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:142
+msgid "Live testing of existing tokens is disabled (the plaintext is not stored on the server). Issue a new token or rotate to test."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:146
+msgid "Rotate this token? The old one will be revoked and a new plaintext will be shown."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:150
+msgid "Rotate"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:155
+msgid "Revoke this token? It can no longer authenticate, but the audit row stays."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:159
+msgid "Revoke"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:163
+msgid "Permanently delete this token row? This action cannot be undone."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:167
+msgid "Delete"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:18
+msgid "Active"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:19
+msgid "Idle"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:191
+msgid "Copied"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:20
+msgid "Stale"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:21
+msgid "Expired"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:210
+msgid "Testing…"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:22
+msgid "Revoked"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:25
+msgid "Used in the last 30 days."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:26
+msgid "Never used yet."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:27
+msgid "No activity in over 30 days."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:28
+msgid "Past its expiry date."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:29
+msgid "Revoked — cannot authenticate."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:33
+msgid "Commander — Tokens"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:36
+msgid "Token revoked."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:38
+msgid "Token permanently deleted."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:40
+msgid "Token rotated — the old one is revoked and a new one was issued below."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:42
+msgid "Could not rotate the token."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:48
+msgid "Token created. Copy it now — it will not be shown again:"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:52
+msgid "Copy"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:53
+msgid "Test now"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:59
+msgid "Issue new token"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:65
+#: includes/admin/views/tokens-page.php:100
+msgid "Label"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:69
+#: includes/admin/views/tokens-page.php:103
+msgid "Scopes"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:77
+msgid "Bind to WP user (optional)"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:80
+msgid "When set, the token executes with that user's WordPress capabilities. Use a least-privilege account."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:84
+msgid "Expires in (days)"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:85
+msgid "0 = never"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:88
+msgid "IP allowlist"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:90
+msgid "One per line. Leave empty to allow any source IP."
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:93
+msgid "Issue token"
+msgstr ""
+
+#: includes/admin/views/tokens-page.php:96
+msgid "Existing tokens"
+msgstr ""
+
+#: includes/class-admin.php:367
+msgid "Missing or malformed token."
+msgstr ""
+
+#. translators: 1: MCP protocol version returned by the server, 2: round-trip latency in ms
+#: includes/class-admin.php:406
+msgid "OK — MCP %1$s, %2$d ms"
+msgstr ""
+
+#. translators: 1: HTTP status code, 2: error message from server
+#: includes/class-admin.php:412
+msgid "Failed — HTTP %1$d, %2$s"
+msgstr ""
+
+#: includes/class-admin.php:51
+#: includes/class-admin.php:52
 msgid "Commander"
 msgstr ""
 
-#: includes/class-admin.php:56
-#: includes/class-admin.php:56
+#: includes/class-admin.php:59
+#: includes/class-admin.php:59
 msgid "Dashboard"
 msgstr ""
 
-#: includes/class-admin.php:57
-#: includes/class-admin.php:57
+#: includes/class-admin.php:60
+#: includes/class-admin.php:60
 msgid "Settings"
 msgstr ""
 
-#: includes/class-admin.php:58
-#: includes/class-admin.php:58
+#: includes/class-admin.php:61
+#: includes/class-admin.php:61
 msgid "Tokens"
 msgstr ""
 
-#: includes/class-admin.php:59
-#: includes/class-admin.php:59
+#: includes/class-admin.php:62
+#: includes/class-admin.php:62
 msgid "OAuth Clients"
 msgstr ""
 
-#: includes/class-admin.php:60
-#: includes/class-admin.php:60
+#: includes/class-admin.php:63
+#: includes/class-admin.php:63
 msgid "Audit Log"
 msgstr ""
 
-#: includes/class-admin.php:62
-#: includes/class-admin.php:62
+#: includes/class-admin.php:65
+#: includes/class-admin.php:65
 msgid "Setup Wizard"
 msgstr ""
 
@@ -498,11 +624,11 @@ msgstr ""
 msgid "Scope '%s' required."
 msgstr ""
 
-#: includes/class-wizard.php:41
+#: includes/class-wizard.php:42
 msgid "30-second setup"
 msgstr ""
 
-#: includes/class-wizard.php:43
+#: includes/class-wizard.php:44
 msgid "skip"
 msgstr ""
 

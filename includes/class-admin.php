@@ -24,6 +24,9 @@ final class Admin {
         add_action( 'wp_dashboard_setup',    [ $this, 'register_dashboard_widget' ] );
         add_action( 'admin_post_cmcp_create_token', [ $this, 'handle_create_token' ] );
         add_action( 'admin_post_cmcp_revoke_token', [ $this, 'handle_revoke_token' ] );
+        add_action( 'admin_post_cmcp_delete_token', [ $this, 'handle_delete_token' ] );
+        add_action( 'admin_post_cmcp_rotate_token', [ $this, 'handle_rotate_token' ] );
+        add_action( 'wp_ajax_cmcp_test_token',       [ $this, 'ajax_test_token' ] );
         add_action( 'admin_post_cmcp_oauth_delete_client',  [ $this, 'handle_oauth_delete_client' ] );
         add_action( 'admin_post_cmcp_oauth_revoke_tokens',  [ $this, 'handle_oauth_revoke_tokens' ] );
         // Wizard hooks.
@@ -235,6 +238,10 @@ final class Admin {
         $tokens = Auth::list_tokens();
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display-only routing read after admin_post redirect; capability check above.
         $just_token = isset( $_GET['new_token'] ) ? sanitize_text_field( wp_unslash( $_GET['new_token'] ) ) : '';
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display-only notice flag after admin_post redirect.
+        $notice = isset( $_GET['notice'] ) ? sanitize_key( wp_unslash( $_GET['notice'] ) ) : '';
+        $test_nonce = wp_create_nonce( 'cmcp_test_token' );
+        $ajax_url   = admin_url( 'admin-ajax.php' );
         include CMCP_DIR . 'includes/admin/views/tokens-page.php';
     }
 
@@ -311,8 +318,108 @@ final class Admin {
         if ( $id ) {
             Auth::revoke_token( $id );
         }
-        wp_safe_redirect( admin_url( 'admin.php?page=cmcp-tokens' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=cmcp-tokens&notice=revoked' ) );
         exit;
+    }
+
+    public function handle_delete_token(): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Forbidden', 403 );
+        }
+        check_admin_referer( 'cmcp_delete_token' );
+        $id = isset( $_POST['token_id'] ) ? absint( wp_unslash( $_POST['token_id'] ) ) : 0;
+        if ( $id ) {
+            Auth::delete_token( $id );
+        }
+        wp_safe_redirect( admin_url( 'admin.php?page=cmcp-tokens&notice=deleted' ) );
+        exit;
+    }
+
+    public function handle_rotate_token(): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Forbidden', 403 );
+        }
+        check_admin_referer( 'cmcp_rotate_token' );
+        $id  = isset( $_POST['token_id'] ) ? absint( wp_unslash( $_POST['token_id'] ) ) : 0;
+        $new = $id ? Auth::rotate_token( $id ) : null;
+        $args = [ 'page' => 'cmcp-tokens' ];
+        if ( $new && ! empty( $new['token'] ) ) {
+            $args['new_token'] = rawurlencode( $new['token'] );
+            $args['notice']    = 'rotated';
+        } else {
+            $args['notice'] = 'rotate_failed';
+        }
+        wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
+    /**
+     * AJAX: live "Test connection" — POSTs `initialize` to /rpc with the bearer
+     * the admin just clicked Test on. Returns { ok, status, latency_ms, message }.
+     */
+    public function ajax_test_token(): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( [ 'message' => 'Forbidden' ], 403 );
+        }
+        check_ajax_referer( 'cmcp_test_token', '_nonce' );
+        $token = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : '';
+        if ( $token === '' || strlen( $token ) < 16 || strlen( $token ) > 256 ) {
+            wp_send_json_error( [ 'message' => __( 'Missing or malformed token.', 'commander-secure-mcp-control' ) ] );
+        }
+
+        $url   = rest_url( CMCP_REST_NAMESPACE . '/rpc' );
+        $start = microtime( true );
+        $resp  = wp_remote_post( $url, [
+            'timeout'   => 8,
+            'headers'   => [
+                'Authorization' => 'Bearer ' . $token,
+                'Content-Type'  => 'application/json',
+                'Accept'        => 'application/json',
+            ],
+            'body'      => wp_json_encode( [
+                'jsonrpc' => '2.0',
+                'id'      => 'cmcp-test',
+                'method'  => 'initialize',
+                'params'  => [
+                    'protocolVersion' => CMCP_PROTOCOL_VERSION,
+                    'clientInfo'      => [ 'name' => 'cmcp-self-test', 'version' => CMCP_VERSION ],
+                    'capabilities'    => (object) [],
+                ],
+            ] ),
+            'sslverify' => true,
+        ] );
+        $latency = (int) round( ( microtime( true ) - $start ) * 1000 );
+
+        if ( is_wp_error( $resp ) ) {
+            wp_send_json_error( [
+                'message'    => $resp->get_error_message(),
+                'latency_ms' => $latency,
+            ] );
+        }
+        $status = (int) wp_remote_retrieve_response_code( $resp );
+        $body   = json_decode( (string) wp_remote_retrieve_body( $resp ), true );
+
+        $ok = ( $status === 200 && isset( $body['result']['protocolVersion'] ) );
+        $message = $ok
+            ? sprintf(
+                /* translators: 1: MCP protocol version returned by the server, 2: round-trip latency in ms */
+                __( 'OK — MCP %1$s, %2$d ms', 'commander-secure-mcp-control' ),
+                (string) $body['result']['protocolVersion'],
+                $latency
+            )
+            : sprintf(
+                /* translators: 1: HTTP status code, 2: error message from server */
+                __( 'Failed — HTTP %1$d, %2$s', 'commander-secure-mcp-control' ),
+                $status,
+                (string) ( $body['error']['message'] ?? $body['message'] ?? 'no body' )
+            );
+
+        wp_send_json_success( [
+            'ok'         => $ok,
+            'status'     => $status,
+            'latency_ms' => $latency,
+            'message'    => $message,
+        ] );
     }
 
     public function handle_oauth_delete_client(): void {

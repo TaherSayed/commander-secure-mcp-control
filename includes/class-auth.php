@@ -83,24 +83,112 @@ final class Auth {
 
     public static function revoke_token( int $row_id ): bool {
         global $wpdb;
-        return (bool) $wpdb->update(
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom plugin tables.
+        $result = (bool) $wpdb->update(
             $wpdb->prefix . Plugin::TABLE_TOKENS,
             [ 'revoked_at' => gmdate( 'Y-m-d H:i:s' ) ],
             [ 'id' => $row_id ],
             [ '%s' ],
             [ '%d' ]
         );
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+        return $result;
+    }
+
+    /**
+     * Permanently delete a token row. Unlike revoke, this wipes the entry.
+     * Prefer revoke for compliance / audit trail.
+     */
+    public static function delete_token( int $row_id ): bool {
+        global $wpdb;
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom plugin tables.
+        $result = (bool) $wpdb->delete(
+            $wpdb->prefix . Plugin::TABLE_TOKENS,
+            [ 'id' => $row_id ],
+            [ '%d' ]
+        );
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+        return $result;
+    }
+
+    /**
+     * Rotate a token in place — issue a new one with the same label, scopes,
+     * user binding, IP allowlist and remaining expiry, then revoke the old.
+     * Returns the new plaintext token (shown ONCE to admin) and new row id.
+     */
+    public static function rotate_token( int $old_id ): ?array {
+        global $wpdb;
+        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom plugin tables.
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}" . Plugin::TABLE_TOKENS . " WHERE id = %d",
+                $old_id
+            ),
+            ARRAY_A
+        );
+        // phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+        if ( ! $row ) {
+            return null;
+        }
+
+        $expires_in = 0;
+        if ( ! empty( $row['expires_at'] ) ) {
+            $remaining  = strtotime( $row['expires_at'] . ' UTC' ) - time();
+            $expires_in = $remaining > 0 ? $remaining : 0;
+        }
+
+        $ip_list = [];
+        if ( ! empty( $row['ip_allowlist'] ) ) {
+            $decoded = json_decode( (string) $row['ip_allowlist'], true );
+            $ip_list = is_array( $decoded ) ? $decoded : [];
+        }
+
+        $new = self::issue_token( [
+            'label'        => (string) $row['label'] . ' (rotated)',
+            'scopes'       => array_filter( array_map( 'trim', explode( ',', (string) $row['scopes'] ) ) ),
+            'user_id'      => (int) $row['user_id'],
+            'ip_allowlist' => $ip_list,
+            'expires_in'   => $expires_in,
+        ] );
+        self::revoke_token( $old_id );
+        return $new;
     }
 
     public static function list_tokens(): array {
         global $wpdb;
+        $audit = $wpdb->prefix . Plugin::TABLE_AUDIT;
+        $toks  = $wpdb->prefix . Plugin::TABLE_TOKENS;
+        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom plugin tables.
         $rows = $wpdb->get_results(
-            "SELECT id, label, prefix, scopes, user_id, expires_at, last_used_at, created_at, revoked_at
-             FROM {$wpdb->prefix}" . Plugin::TABLE_TOKENS . "
-             ORDER BY id DESC",
+            "SELECT t.id, t.label, t.prefix, t.scopes, t.user_id, t.expires_at, t.last_used_at, t.created_at, t.revoked_at,
+                    ( SELECT a.ip FROM {$audit} a WHERE a.token_id = t.id ORDER BY a.id DESC LIMIT 1 ) AS last_ip,
+                    ( SELECT COUNT(*) FROM {$audit} a WHERE a.token_id = t.id AND a.ts > DATE_SUB(NOW(), INTERVAL 7 DAY) ) AS calls_7d
+             FROM {$toks} t
+             ORDER BY t.id DESC",
             ARRAY_A
         );
+        // phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
         return is_array( $rows ) ? $rows : [];
+    }
+
+    /**
+     * Derived status for the admin UI.
+     * Returns: revoked | expired | idle | stale | active.
+     */
+    public static function token_status( array $row ): string {
+        if ( ! empty( $row['revoked_at'] ) ) {
+            return 'revoked';
+        }
+        if ( ! empty( $row['expires_at'] ) && strtotime( $row['expires_at'] . ' UTC' ) < time() ) {
+            return 'expired';
+        }
+        if ( empty( $row['last_used_at'] ) ) {
+            return 'idle';
+        }
+        if ( strtotime( $row['last_used_at'] . ' UTC' ) < time() - 30 * DAY_IN_SECONDS ) {
+            return 'stale';
+        }
+        return 'active';
     }
 
     /**
