@@ -269,8 +269,8 @@ Every MCP call passes through three independent gates:
 
 | Gate | What it checks | Fail message |
 |---|---|---|
-| **1 — MCP scope** | Does the token include the scope the tool requires (`read` / `write` / `admin`)? | `Tool 'site.health' requires scope 'admin'.` |
-| **2 — WP capability** | Does the WP user the token is bound to have the underlying WordPress capability (`manage_options`, `edit_posts`, `activate_plugins`, `list_users`, etc.)? | `Tool 'plugins.list' requires WordPress capability 'activate_plugins'.` |
+| **1 — MCP scope** | Does the token include the scope the tool requires (`read` / `write` / `admin`)? | `Tool 'site_health' requires scope 'admin'.` |
+| **2 — WP capability** | Does the WP user the token is bound to have the underlying WordPress capability (`manage_options`, `edit_posts`, `activate_plugins`, `list_users`, etc.)? | `Tool 'plugins_list' requires WordPress capability 'activate_plugins'.` |
 | **3 — Destructive ops interlock** | If the tool would do a permanent delete or write a sensitive option, is "Allow destructive ops" enabled in Settings? | `Destructive operations are disabled in plugin settings.` |
 
 If any gate denies, the call fails with the exact reason in the response body. The most common surprise: token has `admin` scope but is bound to a non-administrator WP user → gate 2 denies. Fix: re-issue the token bound to an Administrator (or the `wp-commander-bot` account).

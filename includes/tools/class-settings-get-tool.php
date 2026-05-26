@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * settings.get — read whitelisted WordPress options.
+ * settings.get â€” read whitelisted WordPress options.
  *
  * @package WPCommander
  */
@@ -21,7 +21,7 @@ final class SettingsGetTool extends AbstractTool {
         'WPLANG', 'siteurl', 'home', 'comment_registration', 'users_can_register',
     ];
 
-    public function name(): string { return 'settings.get'; }
+    public function name(): string { return 'settings_get'; }
 
     public function description(): string {
         return 'Read whitelisted WordPress site settings (general, reading, discussion, permalinks). Pass specific keys or omit to get all readable settings.';

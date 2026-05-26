@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * site.health — quick technical health snapshot.
+ * site.health â€” quick technical health snapshot.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class SiteHealthTool extends AbstractTool {
 
-    public function name(): string { return 'site.health'; }
+    public function name(): string { return 'site_health'; }
 
     public function description(): string {
         return 'Return a technical health snapshot: WP/PHP/MySQL versions, debug flags, multisite status, theme, active plugin count, disk free, memory limit, available updates.';

@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * media.upload — sideload an attachment from a URL into the media library.
+ * media.upload â€” sideload an attachment from a URL into the media library.
  *
  * Only HTTP/HTTPS URLs are allowed; private/loopback IPs are blocked
  * (SSRF protection). Mime types are restricted to those WordPress
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class MediaUploadTool extends AbstractTool {
 
-    public function name(): string { return 'media.upload'; }
+    public function name(): string { return 'media_upload'; }
 
     public function description(): string {
         return 'Download an image or file from a public URL and add it to the media library. Returns the new attachment ID and URL. Private/internal hosts are blocked.';
@@ -102,12 +102,12 @@ final class MediaUploadTool extends AbstractTool {
         // Resolve and check IPs.
         $ips = gethostbynamel( $host );
         if ( ! $ips ) {
-            // IPv6 fallback or unresolvable — be conservative.
+            // IPv6 fallback or unresolvable â€” be conservative.
             throw new \InvalidArgumentException( 'Host does not resolve.' );
         }
         foreach ( $ips as $ip ) {
             if ( ! filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
-                throw new \InvalidArgumentException( 'Host resolves to a private or reserved IP — refusing for SSRF protection.' );
+                throw new \InvalidArgumentException( 'Host resolves to a private or reserved IP â€” refusing for SSRF protection.' );
             }
         }
     }

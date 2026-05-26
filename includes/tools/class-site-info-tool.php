@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * site.info — return basic public site info.
+ * site.info â€” return basic public site info.
  *
  * @package ClaudeMCPSecure
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class SiteInfoTool extends AbstractTool {
 
-    public function name(): string { return 'site.info'; }
+    public function name(): string { return 'site_info'; }
 
     public function description(): string {
         return 'Return basic information about this WordPress site: title, tagline, URL, language, and timezone.';

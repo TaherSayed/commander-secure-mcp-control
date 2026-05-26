@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * users.update — update non-credential user fields. Passwords are not settable here.
+ * users.update â€” update non-credential user fields. Passwords are not settable here.
  *
  * @package WPCommander
  */
@@ -11,10 +11,10 @@ defined( 'ABSPATH' ) || exit;
 
 final class UsersUpdateTool extends AbstractTool {
 
-    public function name(): string { return 'users.update'; }
+    public function name(): string { return 'users_update'; }
 
     public function description(): string {
-        return 'Update display name, email, or role of a user. Passwords cannot be set via MCP — the user must reset via the normal flow.';
+        return 'Update display name, email, or role of a user. Passwords cannot be set via MCP â€” the user must reset via the normal flow.';
     }
 
     public function input_schema(): array {

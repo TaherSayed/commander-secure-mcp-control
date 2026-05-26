@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * posts.update — update an existing post / page.
+ * posts.update â€” update an existing post / page.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class PostsUpdateTool extends AbstractTool {
 
-    public function name(): string { return 'posts.update'; }
+    public function name(): string { return 'posts_update'; }
 
     public function description(): string {
         return 'Update an existing post or page. Only supplied fields are changed. Caller must have edit_post capability for the target.';

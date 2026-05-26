@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * themes.activate — switch the active theme.
+ * themes.activate â€” switch the active theme.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class ThemesActivateTool extends AbstractTool {
 
-    public function name(): string { return 'themes.activate'; }
+    public function name(): string { return 'themes_activate'; }
 
     public function description(): string {
         return 'Activate an installed theme by its stylesheet slug. Theme must already be installed.';

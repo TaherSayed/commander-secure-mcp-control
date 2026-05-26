@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * comments.moderate — approve / unapprove / spam / trash a comment.
+ * comments.moderate â€” approve / unapprove / spam / trash a comment.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class CommentsModerateTool extends AbstractTool {
 
-    public function name(): string { return 'comments.moderate'; }
+    public function name(): string { return 'comments_moderate'; }
 
     public function description(): string {
         return 'Change moderation status of a comment: approve, hold (unapprove), spam, trash, or untrash.';

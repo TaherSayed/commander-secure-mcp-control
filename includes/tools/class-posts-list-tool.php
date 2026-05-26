@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * posts.list — list published posts (or another post type) with pagination.
+ * posts.list â€” list published posts (or another post type) with pagination.
  *
  * @package ClaudeMCPSecure
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class PostsListTool extends AbstractTool {
 
-    public function name(): string { return 'posts.list'; }
+    public function name(): string { return 'posts_list'; }
 
     public function description(): string {
         return 'List published posts. Returns id, title, excerpt, date, link, and author. Supports paging and post type.';

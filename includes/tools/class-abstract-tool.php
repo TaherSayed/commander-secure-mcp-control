@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 abstract class AbstractTool {
 
-    /** Unique tool name, e.g. "posts.search". Stable across versions. */
+    /** Unique tool name, e.g. "posts_search". Stable across versions. */
     abstract public function name(): string;
 
     /** Human-readable description for the LLM. */

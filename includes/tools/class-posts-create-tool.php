@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * posts.create — create a post or page (any registered post type).
+ * posts.create â€” create a post or page (any registered post type).
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class PostsCreateTool extends AbstractTool {
 
-    public function name(): string { return 'posts.create'; }
+    public function name(): string { return 'posts_create'; }
 
     public function description(): string {
         return 'Create a new post (or page / custom post type). Returns the new ID and edit/view URLs. HTML in content is allowed but sanitised through wp_kses_post.';

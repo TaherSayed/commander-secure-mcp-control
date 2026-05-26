@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * terms.list — list taxonomy terms (categories, tags, or any registered taxonomy).
+ * terms.list â€” list taxonomy terms (categories, tags, or any registered taxonomy).
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class TermsListTool extends AbstractTool {
 
-    public function name(): string { return 'terms.list'; }
+    public function name(): string { return 'terms_list'; }
 
     public function description(): string {
         return 'List terms in a taxonomy (category, post_tag, or any custom taxonomy). Returns id, name, slug, parent and count.';

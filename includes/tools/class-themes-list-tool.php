@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * themes.list — list installed themes.
+ * themes.list â€” list installed themes.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class ThemesListTool extends AbstractTool {
 
-    public function name(): string { return 'themes.list'; }
+    public function name(): string { return 'themes_list'; }
 
     public function description(): string {
         return 'List installed themes with name, version, parent (if child theme), and active flag.';

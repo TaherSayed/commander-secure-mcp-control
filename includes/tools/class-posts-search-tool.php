@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * posts.search — full-text search across published content.
+ * posts.search â€” full-text search across published content.
  *
  * @package ClaudeMCPSecure
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class PostsSearchTool extends AbstractTool {
 
-    public function name(): string { return 'posts.search'; }
+    public function name(): string { return 'posts_search'; }
 
     public function description(): string {
         return 'Full-text search across published posts and pages. Returns the top matches with id, title, excerpt and link.';

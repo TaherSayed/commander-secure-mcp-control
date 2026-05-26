@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * posts.get — fetch one post by ID. Only published posts are returned to non-privileged users.
+ * posts.get â€” fetch one post by ID. Only published posts are returned to non-privileged users.
  *
  * @package ClaudeMCPSecure
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class PostsGetTool extends AbstractTool {
 
-    public function name(): string { return 'posts.get'; }
+    public function name(): string { return 'posts_get'; }
 
     public function description(): string {
         return 'Fetch a single post by ID. Returns full content (cleaned of shortcodes). Only published posts are accessible unless caller has edit_posts capability.';

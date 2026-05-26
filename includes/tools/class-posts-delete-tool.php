@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * posts.delete — trash a post, or (with danger mode on) permanently delete it.
+ * posts.delete â€” trash a post, or (with danger mode on) permanently delete it.
  *
  * @package WPCommander
  */
@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class PostsDeleteTool extends AbstractTool {
 
-    public function name(): string { return 'posts.delete'; }
+    public function name(): string { return 'posts_delete'; }
 
     public function description(): string {
         return 'Move a post to trash. Set permanent=true to delete forever (requires "Allow destructive operations" to be enabled in plugin settings).';

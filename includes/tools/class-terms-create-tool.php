@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * terms.create — create a new term in a taxonomy.
+ * terms.create â€” create a new term in a taxonomy.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class TermsCreateTool extends AbstractTool {
 
-    public function name(): string { return 'terms.create'; }
+    public function name(): string { return 'terms_create'; }
 
     public function description(): string {
         return 'Create a new term (category, tag, etc.) in the given taxonomy.';

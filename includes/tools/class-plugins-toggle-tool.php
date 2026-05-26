@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * plugins.toggle — activate or deactivate a plugin.
+ * plugins.toggle â€” activate or deactivate a plugin.
  *
  * Protects Commander itself: refuses to deactivate its own plugin file.
  *
@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class PluginsToggleTool extends AbstractTool {
 
-    public function name(): string { return 'plugins.toggle'; }
+    public function name(): string { return 'plugins_toggle'; }
 
     public function description(): string {
         return 'Activate or deactivate a plugin by its plugin file (e.g. "akismet/akismet.php"). Refuses to deactivate Commander itself.';

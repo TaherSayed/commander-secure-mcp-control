@@ -101,24 +101,50 @@ final class Plugin {
             'webhook_secret'       => '',     // optional HMAC-SHA256 secret; sent as X-Commander-Signature: sha256=...
             'enabled_tools'        => [
                 // read
-                'site.info', 'site.health', 'posts.list', 'posts.get', 'posts.search',
-                'media.list', 'comments.list', 'terms.list', 'settings.get',
+                'site_info', 'site_health', 'posts_list', 'posts_get', 'posts_search',
+                'media_list', 'comments_list', 'terms_list', 'settings_get',
                 // write
-                'posts.create', 'posts.update', 'posts.delete',
-                'media.upload', 'media.delete',
-                'comments.moderate', 'terms.create',
+                'posts_create', 'posts_update', 'posts_delete',
+                'media_upload', 'media_delete',
+                'comments_moderate', 'terms_create',
                 // admin
-                'users.list', 'users.create', 'users.update',
-                'plugins.list', 'plugins.toggle',
-                'themes.list', 'themes.activate',
-                'settings.update',
+                'users_list', 'users_create', 'users_update',
+                'plugins_list', 'plugins_toggle',
+                'themes_list', 'themes_activate',
+                'settings_update',
             ],
         ];
     }
 
     public static function get_settings(): array {
         $saved = get_option( self::OPT_SETTINGS, [] );
-        return wp_parse_args( is_array( $saved ) ? $saved : [], self::default_settings() );
+        $merged = wp_parse_args( is_array( $saved ) ? $saved : [], self::default_settings() );
+
+        // Backward-compat (v1.x → v2.0): tool ids were `site.info`-style; Claude.ai
+        // rejects dots in tool names, so they're now `site_info`-style. Normalize
+        // any legacy dotted ids in the stored enabled_tools list so existing
+        // installs keep their selection after upgrade.
+        if ( ! empty( $merged['enabled_tools'] ) && is_array( $merged['enabled_tools'] ) ) {
+            $normalized = [];
+            $changed    = false;
+            foreach ( $merged['enabled_tools'] as $slug ) {
+                if ( ! is_string( $slug ) ) {
+                    continue;
+                }
+                $new = str_replace( '.', '_', $slug );
+                if ( $new !== $slug ) {
+                    $changed = true;
+                }
+                $normalized[] = $new;
+            }
+            $merged['enabled_tools'] = array_values( array_unique( $normalized ) );
+            if ( $changed && is_array( $saved ) ) {
+                $saved['enabled_tools'] = $merged['enabled_tools'];
+                update_option( self::OPT_SETTINGS, $saved, false );
+            }
+        }
+
+        return $merged;
     }
 
     /* ---------------- Activation / Deactivation ---------------- */

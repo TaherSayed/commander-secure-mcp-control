@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * comments.list — list comments by status.
+ * comments.list â€” list comments by status.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class CommentsListTool extends AbstractTool {
 
-    public function name(): string { return 'comments.list'; }
+    public function name(): string { return 'comments_list'; }
 
     public function description(): string {
         return 'List comments filtered by status (approve, hold, spam, trash). Returns author name (PII), email is omitted unless caller has moderate_comments.';

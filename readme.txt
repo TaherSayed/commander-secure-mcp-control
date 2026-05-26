@@ -4,7 +4,7 @@ Tags: mcp, claude, ai, oauth, rest-api
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.7.2
+Stable tag: 1.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,16 +25,16 @@ Most "AI for WordPress" plugins either hand over an admin session to a third par
 * **Transport hardening.** HTTPS enforced, Origin header allowlisted (DNS rebinding mitigation), request size capped, per-token rate limit, constant-time token comparison.
 * **OAuth 2.1 with PKCE (S256 required)**, refresh token rotation, RFC 7009 revocation, RFC 8414 / RFC 9728 discovery, RFC 7591 Dynamic Client Registration **off by default** (admin opt-in).
 * **Brute-force protection** with progressive lockout (5 / 10 / 20 fails → 5 min / 1 h / 24 h) and optional email alerts.
-* **SSRF guard** on `media.upload` — rejects private, loopback and reserved IPs.
-* **Self-protection.** The plugin refuses to deactivate itself via the `plugins.toggle` tool.
+* **SSRF guard** on `media_upload` — rejects private, loopback and reserved IPs.
+* **Self-protection.** The plugin refuses to deactivate itself via the `plugins_toggle` tool.
 
 = 25 built-in tools, scoped read / write / admin =
 
-**Read scope:** `site.info`, `site.health`, `posts.list`, `posts.get`, `posts.search`, `media.list`, `comments.list`, `terms.list`, `settings.get`
+**Read scope:** `site_info`, `site_health`, `posts_list`, `posts_get`, `posts_search`, `media_list`, `comments_list`, `terms_list`, `settings_get`
 
-**Write scope:** `posts.create`, `posts.update`, `posts.delete`, `media.upload`, `media.delete`, `comments.moderate`, `terms.create`
+**Write scope:** `posts_create`, `posts_update`, `posts_delete`, `media_upload`, `media_delete`, `comments_moderate`, `terms_create`
 
-**Admin scope:** `users.list`, `users.create`, `users.update`, `plugins.list`, `plugins.toggle`, `themes.list`, `themes.activate`, `settings.update`
+**Admin scope:** `users_list`, `users_create`, `users_update`, `plugins_list`, `plugins_toggle`, `themes_list`, `themes_activate`, `settings_update`
 
 You can register your own tools through the `cmcp_register_tools` filter — see the FAQ.
 
@@ -51,7 +51,7 @@ You can register your own tools through the `cmcp_register_tools` filter — see
 
 = Privacy =
 
-Commander does not "phone home". No analytics, no remote logging, no third-party requests beyond what you explicitly ask a tool to do (e.g. `media.upload` fetches the URL you pass it). All data — tokens, audit log, OAuth clients/codes/tokens — lives in your own database.
+Commander does not "phone home". No analytics, no remote logging, no third-party requests beyond what you explicitly ask a tool to do (e.g. `media_upload` fetches the URL you pass it). All data — tokens, audit log, OAuth clients/codes/tokens — lives in your own database.
 
 == Installation ==
 
@@ -117,6 +117,10 @@ Please email security@hbs-it-gmbh.de rather than opening a public issue.
 5. Audit Log — every call, with token id, IP, JSON-RPC method, tool, status, note.
 
 == Changelog ==
+
+= 1.8.0 =
+* **Breaking-compatible:** Tool names changed from dotted (`site.info`, `posts.list`) to underscored (`site_info`, `posts_list`) so Claude.ai's remote-MCP UI accepts them. Claude.ai enforces `^[a-zA-Z0-9_-]{1,64}$` on tool names and rejected the dotted form (`tools.36.FrontendRemoteMcpToolDefinition.name: String should match pattern ...`). Claude Desktop / Claude Code clients also accept the new names. Existing installs are auto-migrated on first load — any dotted slugs saved in the `enabled_tools` option are rewritten to underscored equivalents, so admins keep their tool selection without manual action.
+* **Compat:** External callers that hard-coded `tools/call` with `name: "site.info"` need to switch to `site_info`. The legacy dotted names are not aliased on the wire — they are simply gone.
 
 = 1.7.2 =
 * **Fix:** OAuth `service_documentation` (RFC 8414) and `resource_documentation` (RFC 9728) URLs were hardcoded to the author's site. They now default to the project's canonical GitHub URL and can be overridden per-site via the new `cmcp_oauth_service_documentation` and `cmcp_oauth_resource_documentation` filters. All other endpoints already auto-detect the install site via `home_url()` / `rest_url()`.

@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * media.list — list attachments.
+ * media.list â€” list attachments.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class MediaListTool extends AbstractTool {
 
-    public function name(): string { return 'media.list'; }
+    public function name(): string { return 'media_list'; }
 
     public function description(): string {
         return 'List media library attachments with id, title, mime type, URL and thumbnail.';

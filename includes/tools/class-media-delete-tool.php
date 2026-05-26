@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * media.delete — delete an attachment.
+ * media.delete â€” delete an attachment.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class MediaDeleteTool extends AbstractTool {
 
-    public function name(): string { return 'media.delete'; }
+    public function name(): string { return 'media_delete'; }
 
     public function description(): string {
         return 'Permanently delete an attachment from the media library along with its files.';

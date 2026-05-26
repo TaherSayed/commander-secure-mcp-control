@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * plugins.list — list installed plugins with active state and update availability.
+ * plugins.list â€” list installed plugins with active state and update availability.
  *
  * @package WPCommander
  */
@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class PluginsListTool extends AbstractTool {
 
-    public function name(): string { return 'plugins.list'; }
+    public function name(): string { return 'plugins_list'; }
 
     public function description(): string {
         return 'List installed plugins. Returns plugin file, name, version, active state, network active state and whether an update is available.';

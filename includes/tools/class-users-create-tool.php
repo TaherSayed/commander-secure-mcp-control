@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * users.create — create a new WordPress user.
+ * users.create â€” create a new WordPress user.
  *
  * A random password is generated server-side; clients cannot supply one.
  * The admin can choose to email the new user via send_email=true.
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class UsersCreateTool extends AbstractTool {
 
-    public function name(): string { return 'users.create'; }
+    public function name(): string { return 'users_create'; }
 
     public function description(): string {
         return 'Create a new WordPress user with a server-generated password. Role must be one of the registered editable roles. Clients cannot set passwords directly.';
@@ -67,7 +67,7 @@ final class UsersCreateTool extends AbstractTool {
         return $this->json( [
             'id'              => (int) $user_id,
             'login'           => $login,
-            'one_time_password' => $password, // Shown ONCE — log it offline.
+            'one_time_password' => $password, // Shown ONCE â€” log it offline.
             'note'            => 'Store the password securely. It will not be available again.',
         ] );
     }
